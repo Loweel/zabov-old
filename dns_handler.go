@@ -6,7 +6,7 @@ import (
 	"github.com/miekg/dns"
 )
 
-// tmp
+// tmp. This is a test, just to experiment with dns libraries
 var domainsToAddresses = map[string]string{
 	"google.com.": "1.2.3.4",
 	"puppa.qui.":  "151.152.153.154",
