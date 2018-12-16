@@ -1,42 +1,52 @@
 package main
 
 import (
+	"fmt"
 	"log"
-	"net"
-	"strconv"
 
+	config "github.com/micro/go-config"
+	configfile "github.com/micro/go-config/source/file"
 	"github.com/miekg/dns"
 )
 
-var domainsToAddresses = map[string]string{
-	"google.com.":       "1.2.3.4",
-	"jameshfisher.com.": "104.198.14.52",
-}
+//MyDNS is my dns server
+var MyDNS *dns.Server
+
+//MyConf is the config file
+var MyConf config.Config
 
 type handler struct{}
 
-func (mydns *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
-	msg := dns.Msg{}
-	msg.SetReply(r)
-	switch r.Question[0].Qtype {
-	case dns.TypeA:
-		msg.Authoritative = true
-		domain := msg.Question[0].Name
-		address, ok := domainsToAddresses[domain]
-		if ok {
-			msg.Answer = append(msg.Answer, &dns.A{
-				Hdr: dns.RR_Header{Name: domain, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: 60},
-				A:   net.ParseIP(address),
-			})
-		}
-	}
-	w.WriteMsg(&msg)
+func init() {
+
+	MyConf = config.NewConfig()
+
+	MyConf.Load(configfile.NewSource(
+		configfile.WithPath("./config.json"),
+	))
+
+	// now we read configuration file
+	fmt.Println("Reading configuration file...")
+	ZabovPort := MyConf.Get("zabov", "port").String("53")
+	ZabovType := MyConf.Get("zabov", "proto").String("udp")
+	ZabovAddr := MyConf.Get("zabov", "ipaddr").String("127.0.0.1")
+
+	zabovString := ZabovAddr + ":" + ZabovPort
+
+	MyDNS = new(dns.Server)
+	MyDNS.Addr = zabovString
+	MyDNS.Net = ZabovType
+
+	MyConf.Close()
+
 }
 
 func main() {
-	srv := &dns.Server{Addr: ":" + strconv.Itoa(53), Net: "udp"}
-	srv.Handler = &handler{}
-	if err := srv.ListenAndServe(); err != nil {
-		log.Fatalf("Failed to set udp listener %s\n", err.Error())
+
+	MyDNS.Handler = &handler{}
+	if err := MyDNS.ListenAndServe(); err != nil {
+		log.Printf("Failed to set udp listener %s\n", err.Error())
+	} else {
+		log.Printf("Listener running \n")
 	}
 }
