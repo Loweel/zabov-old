@@ -16,6 +16,9 @@ var MyConf config.Config
 //ZabovUpDNS keeps the name of upstream DNSs
 var ZabovUpDNS string
 
+//ZabovSingleBL list of urls returning a file with just names of domains
+var ZabovSingleBL string
+
 type handler struct{}
 
 func main() {

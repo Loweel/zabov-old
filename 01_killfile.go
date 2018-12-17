@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/peterbourgon/diskv"
 )
@@ -14,8 +15,10 @@ func init() {
 	flatTransform := func(s string) []string {
 
 		var d []string
-		d = append(d, s[0:1], s[1:2], s[2:3], s)
-		fmt.Println("Returning: ", d)
+		le := fmt.Sprintf("%d", len(s))
+		fi := fmt.Sprintf("%d", strings.Count(s, "."))
+		en := string(s[len(s)-1])
+		d = append(d, s[0:1], le, en, fi, s)
 		return d
 
 	}
@@ -33,14 +36,14 @@ func init() {
 		fmt.Println("FAILED to create queue!")
 	}
 
-	DomainKill("coglione.com")
-	DomainKill("coglionissimo.com")
-
 }
 
 //DomainKill stores a domain name inside the killfile
 func DomainKill(s string) {
 
-	MyKillfile.WriteString(s, "127.0.0.1")
+	if len(s) > 2 {
 
+		MyKillfile.WriteString(s, "127.0.0.1")
+
+	}
 }

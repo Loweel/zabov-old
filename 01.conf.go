@@ -22,6 +22,7 @@ func init() {
 	ZabovType := MyConf.Get("zabov", "proto").String("udp")
 	ZabovAddr := MyConf.Get("zabov", "ipaddr").String("127.0.0.1")
 	ZabovUpDNS = MyConf.Get("zabov", "upstream").String("127.0.0.1")
+	ZabovSingleBL = MyConf.Get("zabov", "singlefilters").String("")
 
 	zabovString := ZabovAddr + ":" + ZabovPort
 

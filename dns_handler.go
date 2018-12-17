@@ -20,8 +20,8 @@ func (mydns *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 				A:   net.ParseIP("127.0.0.1"),
 			})
 		} else {
-			r := ForwardQuery(&msg)
-			w.WriteMsg(r)
+			ret := ForwardQuery(&msg)
+			w.WriteMsg(ret)
 		}
 	}
 	w.WriteMsg(&msg)

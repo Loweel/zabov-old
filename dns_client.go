@@ -25,6 +25,7 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 			continue
 		} else {
 			r = in
+			return r
 		}
 	}
 	return r
