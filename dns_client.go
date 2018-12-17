@@ -44,7 +44,7 @@ func init() {
 
 	fmt.Println("DNS client engine starting")
 	m := new(dns.Msg)
-	// RFC2606 test domain, should always work.
+	// RFC2606 test domain, should always work, unless internet is down.
 	m.SetQuestion(dns.Fqdn("example.com"), dns.TypeA)
 	ForwardQuery(m)
 	fmt.Println("DNS client tested")
