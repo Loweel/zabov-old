@@ -21,6 +21,7 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 		fmt.Println("DNS: ", d)
 		in, _, err := c.Exchange(query, d)
 		if err != nil {
+			fmt.Printf("Problem with DNS %s : %s\n", d, err.Error())
 			continue
 		} else {
 			r = in
