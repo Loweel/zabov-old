@@ -6,12 +6,6 @@ import (
 	"github.com/miekg/dns"
 )
 
-// tmp. This is a test, just to experiment with dns libraries
-var domainsToAddresses = map[string]string{
-	"google.com.": "1.2.3.4",
-	"puppa.qui.":  "151.152.153.154",
-}
-
 func (mydns *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	msg := dns.Msg{}
 	msg.SetReply(r)
@@ -19,12 +13,15 @@ func (mydns *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	case dns.TypeA:
 		msg.Authoritative = true
 		domain := msg.Question[0].Name
-		address, ok := domainsToAddresses[domain]
-		if ok {
+
+		if MyKillfile.Has(domain) {
 			msg.Answer = append(msg.Answer, &dns.A{
 				Hdr: dns.RR_Header{Name: domain, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: 60},
-				A:   net.ParseIP(address),
+				A:   net.ParseIP("127.0.0.1"),
 			})
+		} else {
+			r := ForwardQuery(&msg)
+			w.WriteMsg(r)
 		}
 	}
 	w.WriteMsg(&msg)
