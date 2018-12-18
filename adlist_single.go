@@ -59,7 +59,7 @@ func SingleIndexFilter(durl string) error {
 		if ur.IsAbs() {
 			DomainKill(ur.Hostname(), durl)
 		} else {
-			fmt.Println("Malfomed line: ", a)
+			fmt.Println("Malfomed Single line: ", a)
 		}
 
 	}

@@ -55,7 +55,7 @@ func DoubleIndexFilter(durl string) error {
 				DomainKill(strings.Trim(k[1], " "), durl)
 			}
 		} else {
-			fmt.Println("Malfomed line: ", a)
+			fmt.Println("Malfomed Host line: ", a)
 		}
 
 	}
