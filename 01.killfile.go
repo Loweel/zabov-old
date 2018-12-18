@@ -19,7 +19,6 @@ func init() {
 		usen := strings.Split(s, ".")
 		inverse := reverse(usen)
 		d = append(d, inverse...)
-		d = append(d, s)
 		return d
 
 	}
