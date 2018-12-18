@@ -19,6 +19,9 @@ var ZabovUpDNS string
 //ZabovSingleBL list of urls returning a file with just names of domains
 var ZabovSingleBL string
 
+//ZabovDoubleBL list of urls returning a file with  IP<space>domain
+var ZabovDoubleBL string
+
 type handler struct{}
 
 func main() {

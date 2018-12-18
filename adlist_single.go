@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	downloadThread()
+	go downloadThread()
 }
 
 //SingleIndexFilter puts the domains inside file
@@ -69,6 +69,7 @@ func getSingleFilters() {
 }
 
 func downloadThread() {
+	fmt.Println("Starting updater of SINGLE lists")
 	for {
 		getSingleFilters()
 		time.Sleep(12 * time.Hour)
