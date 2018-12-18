@@ -20,7 +20,7 @@ func init() {
 	fmt.Println("Reading configuration file...")
 	ZabovPort := MyConf.Get("zabov", "port").String("53")
 	ZabovType := MyConf.Get("zabov", "proto").String("udp")
-	ZabovAddr := MyConf.Get("zabov", "ipaddr").String("127.0.0.1")
+	ZabovAddr := MyConf.Get("zabov", "ipaddr").String("")
 	ZabovUpDNS = MyConf.Get("zabov", "upstream").String("127.0.0.1")
 	ZabovSingleBL = MyConf.Get("zabov", "singlefilters").String("")
 	ZabovDoubleBL = MyConf.Get("zabov", "doublefilters").String("")
