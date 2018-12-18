@@ -47,12 +47,12 @@ The config file should look like:
 
 Where:
 
--port is the port number. Usually is 53
--proto is the protocol. Choices are "udp", "tcp", "tcp/udp"
--upstream: upstream DNS where to forward the DNS query. Comma separated list of IP:PORT
--singlefilters: comma separated list of download URLs, for blacklists following the "singlefilter" schema.
--doublefilters: comma separated list of download URLs, for blacklists following the "doublefilter" schema.
--blackholeip: IP address to return when the IP is banned. This is because you may want to avoid MX issues, mail loops on localhost, or you have a web server running on localhost
+- port is the port number. Usually is 53
+- proto is the protocol. Choices are "udp", "tcp", "tcp/udp"
+- upstream: upstream DNS where to forward the DNS query. Comma separated list of IP:PORT
+- singlefilters: comma separated list of download URLs, for blacklists following the "singlefilter" schema.
+- doublefilters: comma separated list of download URLs, for blacklists following the "doublefilter" schema.
+- blackholeip: IP address to return when the IP is banned. This is because you may want to avoid MX issues, mail loops on localhost, or you have a web server running on localhost
 
 
 
