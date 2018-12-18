@@ -19,7 +19,7 @@ func (mydns *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		if MyKillfile.Has(fqdn) {
 			msg.Answer = append(msg.Answer, &dns.A{
 				Hdr: dns.RR_Header{Name: domain, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: 60},
-				A:   net.ParseIP("127.0.0.1"),
+				A:   net.ParseIP(ZabovAddBL),
 			})
 		} else {
 			ret := ForwardQuery(r)
