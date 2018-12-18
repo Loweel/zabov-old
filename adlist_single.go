@@ -48,7 +48,13 @@ func SingleIndexFilter(durl string) error {
 
 	for _, a := range dlines {
 
-		ur, _ := url.Parse("http://" + strings.Trim(a, " "))
+		b := strings.Fields(a)
+
+		if len(b) < 1 {
+			continue
+		}
+
+		ur, _ := url.Parse("http://" + b[0])
 
 		if ur.IsAbs() {
 			DomainKill(ur.Hostname(), durl)
