@@ -2,7 +2,7 @@
 
 Tiny replacement for piHole DNS filter
 
-Still Work in progress. 
+Still Work in progress, BETA 
 
 Idea is to produce a very simple, no-web-interface , IP DNS blocker.
 
@@ -55,6 +55,9 @@ Where:
 - doublefilters: comma separated list of download URLs, for blacklists following the "doublefilter" schema.
 - blackholeip: IP address to return when the IP is banned. This is because you may want to avoid MX issues, mail loops on localhost, or you have a web server running on localhost
 
+#TODO:
 
+- caching
+- monitoring port
 
 
