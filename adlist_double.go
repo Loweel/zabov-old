@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
-	"regexp"
 	"strings"
 	"time"
 )
@@ -14,16 +14,16 @@ func init() {
 }
 
 //DoubleIndexFilter puts the domains inside file
-func DoubleIndexFilter(url string) error {
+func DoubleIndexFilter(durl string) error {
 
-	fmt.Println("Retrieving killfile from: ", url)
+	fmt.Println("Retrieving killfile from: ", durl)
 
 	var myBody string
 	var bodyBytes []byte
 	var err error
 
 	// Get the data
-	resp, err := http.Get(url)
+	resp, err := http.Get(durl)
 	if err != nil {
 		return err
 	}
@@ -46,17 +46,21 @@ func DoubleIndexFilter(url string) error {
 
 	fmt.Println("Number of lines: ", len(dlines))
 
-	struc := regexp.MustCompile("^([0-9]+[.].+)[ ]+(.+)$")
-
 	for _, a := range dlines {
 
-		if struc.MatchString(a) {
-			k := struc.FindStringSubmatch(a)
-			DomainKill(k[2])
+		k := strings.Fields(a)
+
+		if len(k) > 1 {
+			if net.ParseIP(k[0]) != nil {
+				DomainKill(strings.Trim(k[1], " "), durl)
+			}
+		} else {
+			fmt.Println("Malfomed line: ", a)
 		}
+
 	}
 
-	fmt.Println("Ingested url: ", url)
+	fmt.Println("Ingested url: ", durl)
 
 	return err
 

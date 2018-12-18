@@ -48,10 +48,10 @@ func SingleIndexFilter(durl string) error {
 
 	for _, a := range dlines {
 
-		ur, _ := url.Parse("http://" + a)
+		ur, _ := url.Parse("http://" + strings.Trim(a, " "))
 
 		if ur.IsAbs() {
-			DomainKill(ur.Hostname())
+			DomainKill(ur.Hostname(), durl)
 		} else {
 			fmt.Println("Malfomed line: ", a)
 		}

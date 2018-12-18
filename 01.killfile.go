@@ -39,11 +39,11 @@ func init() {
 }
 
 //DomainKill stores a domain name inside the killfile
-func DomainKill(s string) {
+func DomainKill(s, durl string) {
 
 	if len(s) > 2 {
 
-		MyKillfile.WriteString(s, ZabovAddBL)
+		MyKillfile.WriteString(strings.Trim(s, " "), durl)
 
 	}
 }
