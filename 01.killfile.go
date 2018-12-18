@@ -43,7 +43,7 @@ func DomainKill(s string) {
 
 	if len(s) > 2 {
 
-		MyKillfile.WriteString(s, "127.0.0.1")
+		MyKillfile.WriteString(s, ZabovAddBL)
 
 	}
 }
