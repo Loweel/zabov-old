@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"net"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -14,16 +14,16 @@ func init() {
 }
 
 //SingleIndexFilter puts the domains inside file
-func SingleIndexFilter(url string) error {
+func SingleIndexFilter(durl string) error {
 
-	fmt.Println("Retrieving killfile from: ", url)
+	fmt.Println("Retrieving killfile from: ", durl)
 
 	var myBody string
 	var bodyBytes []byte
 	var err error
 
 	// Get the data
-	resp, err := http.Get(url)
+	resp, err := http.Get(durl)
 	if err != nil {
 		return err
 	}
@@ -48,16 +48,17 @@ func SingleIndexFilter(url string) error {
 
 	for _, a := range dlines {
 
-		if net.ParseIP(a) != nil {
-			continue
+		ur, _ := url.Parse("http://" + a)
+
+		if ur.IsAbs() {
+			DomainKill(ur.Hostname())
+		} else {
+			fmt.Println("Malfomed line: ", a)
 		}
 
-		if strings.Contains(a, "#") == false {
-			DomainKill(a)
-		}
 	}
 
-	fmt.Println("Ingested url: ", url)
+	fmt.Println("Ingested url: ", durl)
 
 	return err
 
