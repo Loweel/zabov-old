@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"strings"
 	"time"
@@ -46,6 +47,10 @@ func SingleIndexFilter(url string) error {
 	fmt.Println("Number of lines: ", len(dlines))
 
 	for _, a := range dlines {
+
+		if net.ParseIP(a) != nil {
+			continue
+		}
 
 		if strings.Contains(a, "#") == false {
 			DomainKill(a)
