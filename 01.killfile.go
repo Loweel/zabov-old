@@ -15,10 +15,11 @@ func init() {
 	flatTransform := func(s string) []string {
 
 		var d []string
-		le := fmt.Sprintf("%d", len(s))
-		fi := fmt.Sprintf("%d", strings.Count(s, "."))
-		en := string(s[len(s)-1])
-		d = append(d, s[0:1], le, en, fi, s)
+
+		usen := strings.Split(s, ".")
+		inverse := reverse(usen)
+		d = append(d, inverse...)
+		d = append(d, s)
 		return d
 
 	}
@@ -46,4 +47,11 @@ func DomainKill(s string) {
 		MyKillfile.WriteString(s, "127.0.0.1")
 
 	}
+}
+
+func reverse(s []string) []string {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+	return s
 }
