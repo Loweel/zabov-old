@@ -22,6 +22,9 @@ var ZabovSingleBL string
 //ZabovDoubleBL list of urls returning a file with  IP<space>domain
 var ZabovDoubleBL string
 
+//ZabovAddBL is the IP we want to send all the clients to. Usually is 127.0.0.1
+var ZabovAddBL string
+
 type handler struct{}
 
 func main() {
