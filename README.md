@@ -6,11 +6,23 @@ Still Work in progress, BETA
 
 Idea is to produce a very simple, no-web-interface , IP DNS blocker.
 
+# INSTALL
+
+<pre>
+git clone https://git.keinpfusch.net/LowEel/zabov.git
+cd zabov
+go get
+go build
+</pre>
+
+Then, edit config.json.
+Just a few words about "singlefilters" and "doublefilters":
+
 Data must be downloaded from URLs of blacklist mantainers.
 
-Blacklists comes in different kinds.
+There are two kinds of blacklists:
 
-One is the "singlelist", where we find a single column , full of domains:
+One is the "singlefilter", where we find a single column , full of domains:
 
 <pre>
 domain1.com
@@ -18,7 +30,7 @@ domain2.com
 domain3.com
 </pre>
 
-The second is the "doublelist", where there is an IP, usually localhost or 0.0.0.0 and then the domain:
+The second is the "doublefilter", where there is an IP, usually localhost or 0.0.0.0 and then the domain:
 
 <pre>
 127.0.0.1 domain1.com
