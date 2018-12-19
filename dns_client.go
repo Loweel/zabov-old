@@ -14,12 +14,23 @@ import (
 func ForwardQuery(query *dns.Msg) *dns.Msg {
 
 	r := new(dns.Msg)
+	r.SetReply(query)
 
-	// initializing r, just in case no dns works.
-	r.Answer = append(r.Answer, &dns.A{
-		Hdr: dns.RR_Header{Name: query.Question[0].Name, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: 60},
-		A:   net.ParseIP("127.0.0.1"),
-	})
+	fqdn := strings.TrimRight(query.Question[0].Name, ".")
+
+	if MyCachefile.Has(fqdn) {
+		r.Authoritative = true
+		fmt.Println("Cache hit: ", fqdn)
+		cached := GetDomainFromCache(fqdn)
+		fmt.Println("Cached IP: ", cached)
+		if net.ParseIP(cached) != nil {
+			r.Answer = append(r.Answer, &dns.A{
+				Hdr: dns.RR_Header{Name: query.Question[0].Name, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: 60},
+				A:   net.ParseIP(cached),
+			})
+			return r
+		}
+	}
 
 	upl := strings.Split(ZabovUpDNS, ",")
 	fmt.Println("Servers: ", upl)
@@ -33,6 +44,8 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 			continue
 		} else {
 			r = in
+			ip := r.Answer[0].(*dns.A)
+			DomainCache(fqdn, ip.A.String())
 			return r
 		}
 	}
