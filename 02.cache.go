@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/peterbourgon/diskv"
 )
@@ -36,6 +37,8 @@ func init() {
 		fmt.Println("FAILED to create cache!")
 	}
 
+	go cacheCleanThread()
+
 }
 
 //DomainCache stores a domain name inside the cache
@@ -54,5 +57,15 @@ func GetDomainFromCache(s string) string {
 	record := MyCachefile.ReadString(s)
 
 	return record
+
+}
+
+func cacheCleanThread() {
+	fmt.Println("Starting updater of Cache")
+	for {
+
+		time.Sleep(12 * time.Hour)
+		MyCachefile.EraseAll()
+	}
 
 }
