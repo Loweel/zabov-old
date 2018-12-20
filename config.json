@@ -4,6 +4,7 @@
         "proto":"udp", 
         "ipaddr":"127.0.0.1",
         "upstream":"8.8.8.8:53,1.1.1.1:53"  ,
+        "cachettl": "12",
         "singlefilters":"https://mirror1.malwaredomains.com/files/justdomains, https://tspprs.com/dl/cl1" ,
         "doublefilters":"http://sysctl.org/cameleon/hosts,https://www.malwaredomainlist.com/hostslist/hosts.txt,https://adaway.org/hosts.txt", 
         "blackholeip":"127.0.0.1"

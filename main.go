@@ -25,6 +25,9 @@ var ZabovDoubleBL string
 //ZabovAddBL is the IP we want to send all the clients to. Usually is 127.0.0.1
 var ZabovAddBL string
 
+//ZabovCacheTTL is the amount of hours we cache records of DNS
+var ZabovCacheTTL int
+
 type handler struct{}
 
 func main() {

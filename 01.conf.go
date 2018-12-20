@@ -25,6 +25,7 @@ func init() {
 	ZabovSingleBL = MyConf.Get("zabov", "singlefilters").String("")
 	ZabovDoubleBL = MyConf.Get("zabov", "doublefilters").String("")
 	ZabovAddBL = MyConf.Get("zabov", "blackholeip").String("127.0.0.1")
+	ZabovCacheTTL = MyConf.Get("zabov", "cachettl").Int(12)
 
 	zabovString := ZabovAddr + ":" + ZabovPort
 

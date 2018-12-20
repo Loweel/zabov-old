@@ -74,10 +74,10 @@ func GetDomainFromCache(s string) *dns.Msg {
 }
 
 func cacheCleanThread() {
-	fmt.Println("Starting updater of Cache")
+	fmt.Println("Starting updater of Cache, each ", ZabovCacheTTL)
 	for {
 
-		time.Sleep(12 * time.Hour)
+		time.Sleep(time.Duration(ZabovCacheTTL) * time.Hour)
 		MyCachefile.EraseAll()
 	}
 
