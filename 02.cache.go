@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/miekg/dns"
+
 	"github.com/peterbourgon/diskv"
 )
 
@@ -42,21 +44,29 @@ func init() {
 }
 
 //DomainCache stores a domain name inside the cache
-func DomainCache(s, addr string) {
+func DomainCache(s string, resp *dns.Msg) {
+
+	a, err := resp.Pack()
+	if err != nil {
+		fmt.Println("Problems packing the response: ", err.Error())
+	}
 
 	if len(s) > 2 {
 
-		MyCachefile.WriteString(strings.Trim(s, " "), addr)
+		MyCachefile.Write(strings.Trim(s, " "), a)
 
 	}
 }
 
 //GetDomainFromCache stores a domain name inside the cache
-func GetDomainFromCache(s string) string {
+func GetDomainFromCache(s string) *dns.Msg {
 
-	record := MyCachefile.ReadString(s)
+	ret := new(dns.Msg)
 
-	return record
+	record, _ := MyCachefile.Read(s)
+	ret.Unpack(record)
+
+	return ret
 
 }
 

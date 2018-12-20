@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net"
 
 	"strings"
 
@@ -15,21 +14,18 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 
 	r := new(dns.Msg)
 	r.SetReply(query)
+	r.Authoritative = true
 
 	fqdn := strings.TrimRight(query.Question[0].Name, ".")
 
 	if MyCachefile.Has(fqdn) {
-		r.Authoritative = true
+
 		fmt.Println("Cache hit: ", fqdn)
 		cached := GetDomainFromCache(fqdn)
-		fmt.Println("Cached IP: ", cached)
-		if net.ParseIP(cached) != nil {
-			r.Answer = append(r.Answer, &dns.A{
-				Hdr: dns.RR_Header{Name: query.Question[0].Name, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: 60},
-				A:   net.ParseIP(cached),
-			})
-			return r
-		}
+		cached.SetReply(query)
+		cached.Authoritative = true
+		return cached
+
 	}
 
 	upl := strings.Split(ZabovUpDNS, ",")
@@ -43,12 +39,8 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 			fmt.Printf("Problem with DNS %s : %s\n", d, err.Error())
 			continue
 		} else {
-			r = in
-			if r.Answer.Hdr.Rrtype == dns.TypeA {
-				ip := r.Answer[0].(*dns.A)
-				DomainCache(fqdn, ip.A.String())
-			}
-			return r
+			DomainCache(fqdn, in)
+			return in
 		}
 	}
 	return r
