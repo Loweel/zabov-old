@@ -44,8 +44,10 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 			switch r.Question[0].Qtype {
 			case dns.TypeA:
 				DomainCache(fqdn, in)
+				return in
 			case dns.TypeAAAA:
 				DomainCache(fqdn, in)
+				return in
 			default:
 				return in
 			}
