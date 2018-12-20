@@ -81,7 +81,7 @@ func getSingleFilters() {
 }
 
 func downloadThread() {
-	fmt.Println("Starting updater of SINGLE lists, each (hour): ", ZabovCacheTTL)
+	fmt.Println("Starting updater of SINGLE lists, each (hours): ", ZabovCacheTTL)
 	for {
 		getSingleFilters()
 		time.Sleep(time.Duration(ZabovCacheTTL) * time.Hour)

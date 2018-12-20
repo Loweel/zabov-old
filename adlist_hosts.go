@@ -77,7 +77,7 @@ func getDoubleFilters() {
 }
 
 func downloadDoubleThread() {
-	fmt.Println("Starting updater of DOUBLE lists, each:", ZabovCacheTTL)
+	fmt.Println("Starting updater of DOUBLE lists, each (hours):", ZabovCacheTTL)
 	for {
 		getDoubleFilters()
 		time.Sleep(time.Duration(ZabovCacheTTL) * time.Hour)
