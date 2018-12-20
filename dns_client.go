@@ -44,7 +44,7 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 			continue
 		} else {
 			r = in
-			if query.Question[0].Qtype == dns.TypeA {
+			if r.Answer.Hdr.Rrtype == dns.TypeA {
 				ip := r.Answer[0].(*dns.A)
 				DomainCache(fqdn, ip.A.String())
 			}
