@@ -64,7 +64,10 @@ func GetDomainFromCache(s string) *dns.Msg {
 	ret := new(dns.Msg)
 
 	record, _ := MyCachefile.Read(s)
-	ret.Unpack(record)
+	err := ret.Unpack(record)
+	if err != nil {
+		fmt.Println("Problem unpacking response: ", err.Error())
+	}
 
 	return ret
 
