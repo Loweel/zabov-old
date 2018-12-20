@@ -60,7 +60,7 @@ The config file should look like:
 
 Where:
 
-- port is the port number. Usually is 53
+- port is the port number. Usually is 53, you can change for docker, if you like
 - proto is the protocol. Choices are "udp", "tcp", "tcp/udp"
 - ipaddr is the port to listen to. Maybe empty, (which will result in listening to 0.0.0.0) to avoid issues with docker.
 - upstream: upstream DNS where to forward the DNS query. Comma separated list of IP:PORT
