@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 
 	"strings"
 
@@ -32,8 +34,10 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 	upl := strings.Split(ZabovUpDNS, ",")
 	fmt.Println("Servers: ", upl)
 	c := new(dns.Client)
-
-	for _, d := range upl {
+	rand.Seed(time.Now().Unix())
+	for range upl {
+		n := rand.Int() % len(upl)
+		d := upl[n]
 		fmt.Println("Query DNS: ", d)
 		in, _, err := c.Exchange(query, d)
 		if err != nil {
