@@ -18,10 +18,11 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 
 	fqdn := strings.TrimRight(query.Question[0].Name, ".")
 
-	if MyCachefile.Has(fqdn) {
+	lfqdn := fmt.Sprintf("%d", query.Question[0].Qtype) + "." + fqdn
+	if MyCachefile.Has(lfqdn) {
 
 		fmt.Println("Cache hit: ", fqdn)
-		cached := GetDomainFromCache(fqdn)
+		cached := GetDomainFromCache(lfqdn)
 		cached.SetReply(query)
 		cached.Authoritative = true
 		return cached
@@ -41,18 +42,11 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 		} else {
 			in.SetReply(query)
 			in.Authoritative = true
-			switch r.Question[0].Qtype {
-			case dns.TypeA:
-				DomainCache(fqdn, in)
-				return in
-			case dns.TypeAAAA:
-				DomainCache(fqdn, in)
-				return in
-			default:
-				return in
-			}
+			DomainCache(lfqdn, in)
+			return in
 
 		}
+
 	}
 	return r
 

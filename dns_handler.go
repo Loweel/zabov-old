@@ -10,6 +10,7 @@ import (
 func (mydns *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	msg := dns.Msg{}
 	msg.SetReply(r)
+
 	switch r.Question[0].Qtype {
 	case dns.TypeA:
 		msg.Authoritative = true
