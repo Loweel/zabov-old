@@ -39,8 +39,15 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 			fmt.Printf("Problem with DNS %s : %s\n", d, err.Error())
 			continue
 		} else {
-			DomainCache(fqdn, in)
-			return in
+			switch r.Question[0].Qtype {
+			case dns.TypeA:
+				DomainCache(fqdn, in)
+			case dns.TypeAAAA:
+				DomainCache(fqdn, in)
+			default:
+				return in
+			}
+
 		}
 	}
 	return r
