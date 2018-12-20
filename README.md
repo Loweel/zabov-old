@@ -2,7 +2,7 @@
 
 Tiny replacement for piHole DNS filter
 
-Still Work in progress, BETA 
+Still Work in progress, usable.
 
 Idea is to produce a very simple, no-web-interface , IP DNS blocker.
 
