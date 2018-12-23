@@ -4,10 +4,8 @@ import (
 	
 	"os"
 	"bufio"
-"fmt"
-	
-	
-	
+	"fmt"
+				
 )
 
 func init(){
