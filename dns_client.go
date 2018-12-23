@@ -14,7 +14,9 @@ import (
 //first server to answer wins
 func ForwardQuery(query *dns.Msg) *dns.Msg {
 
-	ZabovStats["ForwardQueries"]++
+	incrementStats("ForwardQueries",1 )
+
+	
 
 	r := new(dns.Msg)
 	r.SetReply(query)
