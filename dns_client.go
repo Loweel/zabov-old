@@ -24,7 +24,8 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 
 	lfqdn := fmt.Sprintf("%d", query.Question[0].Qtype) + "." + fqdn
 	if MyCachefile.Has(lfqdn) {	
-		ZabovStats["CacheHit"]++
+		incrementStats("CacheHit",1 )
+		
 		cached := GetDomainFromCache(lfqdn)
 		cached.SetReply(query)
 		cached.Authoritative = true
@@ -44,10 +45,12 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 		in, _, err := c.Exchange(query, d)
 		if err != nil {
 			fmt.Printf("Problem with DNS %s : %s\n", d, err.Error())
-			ZabovStats["Problems " + d]++
+			incrementStats("Problems " + d,1)
+			
 			continue
 		} else {
-			ZabovStats[d]++
+			incrementStats(d,1)
+			
 			in.SetReply(query)
 			in.Authoritative = true
 			DomainCache(lfqdn, in)

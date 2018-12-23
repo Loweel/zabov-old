@@ -28,7 +28,8 @@ func ingestLocalBlacklist(){
 	for scanner.Scan() {
 		d:= scanner.Text()
 		DomainKill(d,ZabovHostsFile)
-		ZabovStats["BlackList"]++
+		incrementStats("Blacklist",1 )
+		
 	}
 	
 	if err := scanner.Err(); err != nil {

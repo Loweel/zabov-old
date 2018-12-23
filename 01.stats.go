@@ -2,7 +2,7 @@ package main
 
 import (
 	"time"
-	
+	"sync"
 	
 	"fmt"
 				
@@ -11,6 +11,8 @@ import (
 //ZabovStats is used to keep statistics to print
 var ZabovStats map[string]int64
 
+//StatMutex is for avoid race condition on the map
+var StatMutex = new(sync.Mutex)
 
 func init(){
 
@@ -25,6 +27,7 @@ func init(){
 
 
 func statsPrint(){
+	StatMutex.Lock()
 	fmt.Println()
 	fmt.Println("Usage Stats: ")
 	for key,value := range ZabovStats {
@@ -32,9 +35,23 @@ func statsPrint(){
 		fmt.Printf("%s : %d\n", key, value)
 
 	}
+	StatMutex.Unlock()
 	fmt.Println()
 
 }
+
+
+func incrementStats(key string, value int64){
+
+	StatMutex.Lock()
+	ZabovStats[key] += value 
+	StatMutex.Unlock()
+
+
+}
+
+
+
 
 func reportPrintThread(){
 	statsPrint()

@@ -44,9 +44,8 @@ func SingleIndexFilter(durl string) error {
 
 	dlines := strings.Split(myBody, "\n")
 
+	incrementStats("PlainLines " + durl, int64(len(dlines)))
 	
-	ZabovStats["PlainLines " + durl] = int64(len(dlines))
-
 	for _, a := range dlines {
 
 		b := strings.Fields(a)
@@ -60,14 +59,15 @@ func SingleIndexFilter(durl string) error {
 		if ur.IsAbs() {
 			DomainKill(ur.Hostname(), durl)
 		} else {
-			ZabovStats["Malformed Single"]++
+			incrementStats("Malformed Single",1 )
+			
 			
 		}
 
 	}
 
+	incrementStats("SourcesList",1 )
 	
-	ZabovStats["SourcesList"]++
 
 	return err
 
