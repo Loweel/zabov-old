@@ -54,8 +54,9 @@ func incrementStats(key string, value int64){
 
 
 func reportPrintThread(){
+	for {
 	statsPrint()
 	time.Sleep(2 * time.Minute)
-
+	}
 }
 
