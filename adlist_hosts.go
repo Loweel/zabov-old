@@ -44,7 +44,7 @@ func DoubleIndexFilter(durl string) error {
 
 	dlines := strings.Split(myBody, "\n")
 
-	fmt.Println("Number of lines: ", len(dlines))
+	ZabovStats["HostsLines " + durl] = int64(len(dlines))
 
 	for _, a := range dlines {
 
@@ -55,12 +55,13 @@ func DoubleIndexFilter(durl string) error {
 				DomainKill(strings.Trim(k[1], " "), durl)
 			}
 		} else {
-			fmt.Println("Malfomed Host line: ", a)
+			ZabovStats["Malformed Host" + durl]++
+			
 		}
 
 	}
 
-	fmt.Println("Ingested url: ", durl)
+	ZabovStats["SourcesHost"]++
 
 	return err
 

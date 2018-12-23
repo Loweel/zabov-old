@@ -14,6 +14,8 @@ import (
 //first server to answer wins
 func ForwardQuery(query *dns.Msg) *dns.Msg {
 
+	ZabovStats["ForwardQueries"]++
+
 	r := new(dns.Msg)
 	r.SetReply(query)
 	r.Authoritative = true
@@ -21,9 +23,8 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 	fqdn := strings.TrimRight(query.Question[0].Name, ".")
 
 	lfqdn := fmt.Sprintf("%d", query.Question[0].Qtype) + "." + fqdn
-	if MyCachefile.Has(lfqdn) {
-
-		fmt.Println("Cache hit: ", fqdn)
+	if MyCachefile.Has(lfqdn) {	
+		ZabovStats["CacheHit"]++
 		cached := GetDomainFromCache(lfqdn)
 		cached.SetReply(query)
 		cached.Authoritative = true
@@ -32,18 +33,21 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 	}
 
 	upl := strings.Split(ZabovUpDNS, ",")
-	fmt.Println("Servers: ", upl)
+	
 	c := new(dns.Client)
 	rand.Seed(time.Now().Unix())
 	for range upl {
 		n := rand.Int() % len(upl)
 		d := upl[n]
-		fmt.Println("Query DNS: ", d)
+		
+		
 		in, _, err := c.Exchange(query, d)
 		if err != nil {
 			fmt.Printf("Problem with DNS %s : %s\n", d, err.Error())
+			ZabovStats["Problems " + d]++
 			continue
 		} else {
+			ZabovStats[d]++
 			in.SetReply(query)
 			in.Authoritative = true
 			DomainCache(lfqdn, in)

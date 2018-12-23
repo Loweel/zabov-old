@@ -43,6 +43,8 @@ func DomainKill(s, durl string) {
 
 	if len(s) > 2 {
 
+		s = strings.ToLower(s)
+
 		MyKillfile.WriteString(strings.Trim(s, " "), durl)
 
 	}
