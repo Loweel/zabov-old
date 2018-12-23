@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 	"sync"
-	
+	"encoding/json"
 	"fmt"
 				
 )
@@ -29,12 +29,8 @@ func init(){
 func statsPrint(){
 	StatMutex.Lock()
 	fmt.Println()
-	fmt.Println("Usage Stats: ")
-	for key,value := range ZabovStats {
-	
-		fmt.Printf("%s : %d\n", key, value)
-
-	}
+	stat,_ := json.Marshal(ZabovStats)
+	fmt.Println(string(stat))
 	StatMutex.Unlock()
 	fmt.Println()
 
