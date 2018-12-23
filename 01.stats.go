@@ -38,7 +38,7 @@ func statsPrint(){
 
 func reportPrintThread(){
 	statsPrint()
-	time.Sleep(5 * time.Minute)
+	time.Sleep(2 * time.Minute)
 
 }
 
