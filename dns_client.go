@@ -40,7 +40,7 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 	c := new(dns.Client)
 	rand.Seed(time.Now().Unix())
 	for range upl {
-		n := rand.Int() % len(upl)
+		n := rand.Intn(128) % len(upl)
 		d := upl[n]
 		
 		
