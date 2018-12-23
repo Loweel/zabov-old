@@ -54,7 +54,8 @@ The config file should look like:
         "cachettl": "12",
         "singlefilters":"https://mirror1.malwaredomains.com/files/justdomains, https://tspprs.com/dl/cl1" ,
         "doublefilters":"http://sysctl.org/cameleon/hosts,https://www.malwaredomainlist.com/hostslist/hosts.txt,https://adaway.org/hosts.txt", 
-        "blackholeip":"127.0.0.1"
+        "blackholeip":"127.0.0.1",
+        "hostsfile":"./hosts.txt"
     }
 
 }
@@ -70,6 +71,7 @@ Where:
 - singlefilters: comma separated list of download URLs, for blacklists following the "singlefilter" schema.
 - doublefilters: comma separated list of download URLs, for blacklists following the "doublefilter" schema.
 - blackholeip: IP address to return when the IP is banned. This is because you may want to avoid MX issues, mail loops on localhost, or you have a web server running on localhost
+- hostsfile: path where you keep your local blacklistfile : this is in the format "singlefilter", meaning one domain per line, unlike hosts file.
 
 # TODO:
 
