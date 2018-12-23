@@ -8,6 +8,8 @@ Idea is to produce a very simple, no-web-interface , IP DNS blocker.
 
 # INSTALL
 
+Zabov requires golang 1.11 or later.
+
 <pre>
 git clone https://git.keinpfusch.net/LowEel/zabov.git
 cd zabov
@@ -30,7 +32,7 @@ domain2.com
 domain3.com
 </pre>
 
-The second is the "doublefilter", where there is an IP, usually localhost or 0.0.0.0 and then the domain:
+The second is the "doublefilter" (a file in "hosts" format, to be precise), where there is an IP, usually localhost or 0.0.0.0 and then the domain:
 
 <pre>
 127.0.0.1 domain1.com
