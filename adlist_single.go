@@ -44,7 +44,7 @@ func SingleIndexFilter(durl string) error {
 
 	dlines := strings.Split(myBody, "\n")
 
-	incrementStats("PlainLines " + durl, int64(len(dlines)))
+	setstatsvalue("PlainLines " + durl, int64(len(dlines)))
 	
 	for _, a := range dlines {
 

@@ -46,6 +46,15 @@ func incrementStats(key string, value int64){
 
 }
 
+func setstatsvalue(key string, value int64){
+
+	StatMutex.Lock()
+	ZabovStats[key] = value
+	StatMutex.Unlock()
+
+
+}
+
 
 
 

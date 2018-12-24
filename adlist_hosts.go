@@ -45,7 +45,7 @@ func DoubleIndexFilter(durl string) error {
 	dlines := strings.Split(myBody, "\n")
 
 	
-	incrementStats("HostLines " + durl , int64(len(dlines)) )
+	setstatsvalue("HostLines " + durl , int64(len(dlines)) )
 
 	for _, a := range dlines {
 
