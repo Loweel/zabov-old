@@ -45,7 +45,7 @@ func DoubleIndexFilter(durl string) error {
 	dlines := strings.Split(myBody, "\n")
 
 	
-	setstatsvalue("HostLines " + durl , int64(len(dlines)) )
+	go setstatsvalue("HostLines " + durl , int64(len(dlines)) )
 
 	for _, a := range dlines {
 
@@ -56,13 +56,13 @@ func DoubleIndexFilter(durl string) error {
 				DomainKill(strings.Trim(k[1], " "), durl)
 			}
 		} else {
-			incrementStats("Malformed Host " + durl, 1)
+			go incrementStats("Malformed Host " + durl, 1)
 			
 		}
 
 	}
 
-	incrementStats("SourceHost",1 )
+	go incrementStats("SourceHost",1 )
 	
 
 	return err

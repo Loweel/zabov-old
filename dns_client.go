@@ -14,7 +14,7 @@ import (
 //first server to answer wins
 func ForwardQuery(query *dns.Msg) *dns.Msg {
 
-	incrementStats("ForwardQueries",1 )
+	go incrementStats("ForwardQueries",1 )
 
 	
 
@@ -26,7 +26,7 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 
 	lfqdn := fmt.Sprintf("%d", query.Question[0].Qtype) + "." + fqdn
 	if MyCachefile.Has(lfqdn) {	
-		incrementStats("CacheHit",1 )
+		go incrementStats("CacheHit",1 )
 		
 		cached := GetDomainFromCache(lfqdn)
 		cached.SetReply(query)
@@ -47,11 +47,11 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 		in, _, err := c.Exchange(query, d)
 		if err != nil {
 			fmt.Printf("Problem with DNS %s : %s\n", d, err.Error())
-			incrementStats("Problems " + d,1)
+			go incrementStats("Problems " + d,1)
 			
 			continue
 		} else {
-			incrementStats(d,1)
+			go incrementStats(d,1)
 			
 			in.SetReply(query)
 			in.Authoritative = true
