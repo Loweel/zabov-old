@@ -33,7 +33,7 @@ func init() {
 	})
 
 	if MyCachefile != nil {
-		fmt.Println("Cache folder created", MyCachefile.BasePath)
+		fmt.Println("Cache folder created: ", MyCachefile.BasePath)
 		MyCachefile.EraseAll()
 
 	} else {
