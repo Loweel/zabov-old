@@ -34,10 +34,13 @@ func init() {
 
 	if MyCachefile != nil {
 		fmt.Println("Cache folder created", MyCachefile.BasePath)
+		MyCachefile.EraseAll()
 
 	} else {
 		fmt.Println("FAILED to create cache!")
 	}
+
+	
 
 	go cacheCleanThread()
 

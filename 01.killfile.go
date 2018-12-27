@@ -31,10 +31,13 @@ func init() {
 
 	if MyKillfile != nil {
 		fmt.Println("Killfile folder created", MyKillfile.BasePath)
+		MyKillfile.EraseAll()
 
 	} else {
 		fmt.Println("FAILED to create queue!")
 	}
+
+	
 
 }
 
