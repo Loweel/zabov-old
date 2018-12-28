@@ -28,6 +28,10 @@ var ZabovAddBL string
 //ZabovCacheTTL is the amount of hours we cache records of DNS
 var ZabovCacheTTL int
 
+//ZabovKillTTL is the amount of hours we cache the killfile
+var ZabovKillTTL int
+
+
 //ZabovHostsFile is the file we use to keep our hosts
 var ZabovHostsFile string
 
