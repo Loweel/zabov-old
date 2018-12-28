@@ -51,7 +51,8 @@ The config file should look like:
         "proto":"udp", 
         "ipaddr":"127.0.0.1",
         "upstream":"8.8.8.8:53,1.1.1.1:53"  ,
-        "cachettl": "12",
+        "cachettl": "4",
+        "killfilettl": "12",
         "singlefilters":"https://mirror1.malwaredomains.com/files/justdomains, https://tspprs.com/dl/cl1" ,
         "doublefilters":"http://sysctl.org/cameleon/hosts,https://www.malwaredomainlist.com/hostslist/hosts.txt,https://adaway.org/hosts.txt", 
         "blackholeip":"127.0.0.1",
@@ -68,6 +69,7 @@ Where:
 - ipaddr is the port to listen to. Maybe empty, (which will result in listening to 0.0.0.0) to avoid issues with docker.
 - upstream: upstream DNS where to forward the DNS query. Comma separated list of IP:PORT
 - cachettl: amount of time the cache is kept (in hours)
+- killfilettl: refresh time for killfiles
 - singlefilters: comma separated list of download URLs, for blacklists following the "singlefilter" schema.
 - doublefilters: comma separated list of download URLs, for blacklists following the "doublefilter" schema.
 - blackholeip: IP address to return when the IP is banned. This is because you may want to avoid MX issues, mail loops on localhost, or you have a web server running on localhost
