@@ -49,7 +49,7 @@ The config file should look like:
 <pre>
 {
     "zabov": {  
-        "port":"5453", 
+        "port":"53", 
         "proto":"udp", 
         "ipaddr":"127.0.0.1",
         "upstream":"8.8.8.8:53,1.1.1.1:53"  ,
