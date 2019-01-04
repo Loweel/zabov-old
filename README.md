@@ -17,7 +17,9 @@ go get
 go build
 </pre>
 
-Then, edit config.json.
+Then, edit config.json: please notice config.json must be in the same folder of the executable you run.
+
+
 Just a few words about "singlefilters" and "doublefilters":
 
 Data must be downloaded from URLs of blacklist mantainers.
