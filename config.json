@@ -6,8 +6,8 @@
         "upstream":"8.8.8.8:53,1.1.1.1:53,9.9.9.9:53"  ,
         "cachettl": "4",
         "killfilettl": "12",
-        "singlefilters":"./urls-hosts.txt" ,
-        "doublefilters":"./urls-domains.txt", 
+        "singlefilters":"./urls-domains.txt" ,
+        "doublefilters":"./urls-hosts.txt", 
         "blackholeip":"127.0.0.1",
         "hostsfile":"./urls-local.txt"
     }

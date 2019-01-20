@@ -4,9 +4,8 @@ https://adaway.org/hosts.txt
 https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
 https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews/hosts
 https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling/hosts
-https://someonewhocares.org/hosts/
+https://someonewhocares.org/hosts/hosts
 https://getadhell.com/standard-package.txt
-https://pgl.yoyo.org/as/serverlist.php
 https://hosts-file.net/ad_servers.txt
 https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt
 

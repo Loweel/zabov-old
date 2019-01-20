@@ -67,6 +67,7 @@ func SingleIndexFilter(durl string) error {
 
 			DomainKill(ur.Hostname(), durl)
 		} else {
+			fmt.Print(b)
 			go incrementStats("Malformed Single", 1)
 
 		}

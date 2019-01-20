@@ -60,6 +60,7 @@ func DoubleIndexFilter(durl string) error {
 				DomainKill(strings.Trim(k[1], " "), durl)
 			}
 		} else {
+
 			go incrementStats("Malformed Host "+durl, 1)
 
 		}
