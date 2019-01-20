@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/md5"
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/peterbourgon/diskv"
@@ -16,9 +18,10 @@ func init() {
 
 		var d []string
 
-		usen := strings.Split(s, ".")
-		inverse := reverse(usen)
-		d = append(d, inverse...)
+		h := md5sum(s)
+
+		d = append(d, h[0:4])
+
 		return d
 
 	}
@@ -26,7 +29,7 @@ func init() {
 	MyKillfile = diskv.New(diskv.Options{
 		BasePath:     "killfile",
 		Transform:    flatTransform,
-		CacheSizeMax: 1024 * 1024,
+		CacheSizeMax: 2048 * 2048,
 	})
 
 	if MyKillfile != nil {
@@ -50,9 +53,8 @@ func DomainKill(s, durl string) {
 	}
 }
 
-func reverse(s []string) []string {
-	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
-		s[i], s[j] = s[j], s[i]
-	}
-	return s
+func md5sum(s string) string {
+	h := md5.New()
+	io.WriteString(h, s)
+	return fmt.Sprintf("%x", h.Sum(nil))
 }
