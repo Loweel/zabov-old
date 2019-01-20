@@ -40,7 +40,7 @@ func SingleIndexFilter(durl string) error {
 	}
 
 	myBody = string(bodyBytes)
-	fmt.Println("Killfile size: ", len(myBody))
+	fmt.Printf("%s Killfile size: %d\n", durl, len(myBody))
 
 	dlines := strings.Split(myBody, "\n")
 
