@@ -22,12 +22,12 @@ func init() {
 	ZabovType := MyConf.Get("zabov", "proto").String("udp")
 	ZabovAddr := MyConf.Get("zabov", "ipaddr").String("")
 	ZabovUpDNS = MyConf.Get("zabov", "upstream").String("127.0.0.1")
-	ZabovSingleBL = MyConf.Get("zabov", "singlefilters").String("")
-	ZabovDoubleBL = MyConf.Get("zabov", "doublefilters").String("")
+	ZabovSingleBL = MyConf.Get("zabov", "singlefilters").String("./urls-hosts.txt")
+	ZabovDoubleBL = MyConf.Get("zabov", "doublefilters").String("./urls-domains.txt")
 	ZabovAddBL = MyConf.Get("zabov", "blackholeip").String("127.0.0.1")
 	ZabovCacheTTL = MyConf.Get("zabov", "cachettl").Int(1)
 	ZabovKillTTL = MyConf.Get("zabov", "killfilettl").Int(12)
-	ZabovHostsFile =  MyConf.Get("zabov","hostsftile").String("./hosts.txt")
+	ZabovHostsFile = MyConf.Get("zabov", "hostsfile").String("./urls-local.txt")
 
 	zabovString := ZabovAddr + ":" + ZabovPort
 

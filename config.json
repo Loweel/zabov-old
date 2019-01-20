@@ -6,10 +6,10 @@
         "upstream":"8.8.8.8:53,1.1.1.1:53,9.9.9.9:53"  ,
         "cachettl": "4",
         "killfilettl": "12",
-        "singlefilters":"https://mirror1.malwaredomains.com/files/justdomains, https://tspprs.com/dl/cl1" ,
-        "doublefilters":"http://sysctl.org/cameleon/hosts,https://www.malwaredomainlist.com/hostslist/hosts.txt,https://adaway.org/hosts.txt", 
+        "singlefilters":"./urls-hosts.txt" ,
+        "doublefilters":"./urls-domains.txt", 
         "blackholeip":"127.0.0.1",
-        "hostsfile":"./hosts.txt"
+        "hostsfile":"./urls-local.txt"
     }
 
 }

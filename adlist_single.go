@@ -44,8 +44,8 @@ func SingleIndexFilter(durl string) error {
 
 	dlines := strings.Split(myBody, "\n")
 
-	go setstatsvalue("PlainLines " + durl, int64(len(dlines)))
-	
+	go setstatsvalue("PlainLines "+durl, int64(len(dlines)))
+
 	for _, a := range dlines {
 
 		b := strings.Fields(a)
@@ -59,15 +59,13 @@ func SingleIndexFilter(durl string) error {
 		if ur.IsAbs() {
 			DomainKill(ur.Hostname(), durl)
 		} else {
-			go incrementStats("Malformed Single",1 )
-			
-			
+			go incrementStats("Malformed Single", 1)
+
 		}
 
 	}
 
-	go incrementStats("SourcesList",1 )
-	
+	go incrementStats("SourcesList", 1)
 
 	return err
 
@@ -75,10 +73,10 @@ func SingleIndexFilter(durl string) error {
 
 func getSingleFilters() {
 
-	s := strings.Split(ZabovSingleBL, ",")
+	s := fileByLines(ZabovSingleBL)
 
 	for _, a := range s {
-		SingleIndexFilter(a)
+		go SingleIndexFilter(a)
 	}
 
 }

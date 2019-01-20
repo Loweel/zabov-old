@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
-	"time"
 
 	"strings"
 
@@ -14,9 +12,7 @@ import (
 //first server to answer wins
 func ForwardQuery(query *dns.Msg) *dns.Msg {
 
-	go incrementStats("ForwardQueries",1 )
-
-	
+	go incrementStats("ForwardQueries", 1)
 
 	r := new(dns.Msg)
 	r.SetReply(query)
@@ -25,9 +21,9 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 	fqdn := strings.TrimRight(query.Question[0].Name, ".")
 
 	lfqdn := fmt.Sprintf("%d", query.Question[0].Qtype) + "." + fqdn
-	if MyCachefile.Has(lfqdn) {	
-		go incrementStats("CacheHit",1 )
-		
+	if MyCachefile.Has(lfqdn) {
+		go incrementStats("CacheHit", 1)
+
 		cached := GetDomainFromCache(lfqdn)
 		cached.SetReply(query)
 		cached.Authoritative = true
@@ -36,23 +32,23 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 	}
 
 	upl := strings.Split(ZabovUpDNS, ",")
-	
+
 	c := new(dns.Client)
-	rand.Seed(time.Now().Unix())
+	n := 0
 	for range upl {
-		n := rand.Intn(128) % len(upl)
+		// round robin with retry
+		n = (n + 1) % len(upl)
 		d := upl[n]
-		
-		
+
 		in, _, err := c.Exchange(query, d)
 		if err != nil {
 			fmt.Printf("Problem with DNS %s : %s\n", d, err.Error())
-			go incrementStats("Problems " + d,1)
-			
+			go incrementStats("Problems "+d, 1)
+
 			continue
 		} else {
-			go incrementStats(d,1)
-			
+			go incrementStats(d, 1)
+
 			in.SetReply(query)
 			in.Authoritative = true
 			DomainCache(lfqdn, in)

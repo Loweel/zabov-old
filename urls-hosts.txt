@@ -1,0 +1,3 @@
+http://sysctl.org/cameleon/hosts
+https://www.malwaredomainlist.com/hostslist/hosts.txt
+https://adaway.org/hosts.txt
