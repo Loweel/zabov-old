@@ -34,13 +34,10 @@ func init() {
 
 	if MyCachefile != nil {
 		fmt.Println("Cache folder created: ", MyCachefile.BasePath)
-		MyCachefile.EraseAll()
 
 	} else {
 		fmt.Println("FAILED to create cache!")
 	}
-
-	
 
 	go cacheCleanThread()
 
@@ -81,7 +78,7 @@ func cacheCleanThread() {
 	for {
 
 		time.Sleep(time.Duration(ZabovCacheTTL) * time.Hour)
-		MyCachefile.EraseAll()
+		go MyCachefile.EraseAll()
 	}
 
 }

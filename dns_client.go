@@ -43,7 +43,7 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 		in, _, err := c.Exchange(query, d)
 		if err != nil {
 			fmt.Printf("Problem with DNS %s : %s\n", d, err.Error())
-			go incrementStats("Problems "+d, 1)
+			go incrementStats("DNS Problems "+d, 1)
 
 			continue
 		} else {

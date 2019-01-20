@@ -61,13 +61,13 @@ func DoubleIndexFilter(durl string) error {
 			}
 		} else {
 
-			go incrementStats("Malformed Host "+durl, 1)
+			go incrementStats("Malformed HostLines "+durl, 1)
 
 		}
 
 	}
 
-	go incrementStats("SourceHost", 1)
+	go incrementStats("SourceHostUrl", 1)
 
 	return err
 

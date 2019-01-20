@@ -60,21 +60,21 @@ func SingleIndexFilter(durl string) error {
 
 		ur, urStrErr := url.ParseRequestURI("http://" + b[0])
 		if urStrErr != nil {
+			go incrementStats("Malformed Domains", 1)
 			return urStrErr
 		}
 
 		if ur.IsAbs() {
-
 			DomainKill(ur.Hostname(), durl)
 		} else {
 			fmt.Print(b)
-			go incrementStats("Malformed Single", 1)
+			go incrementStats("Malformed Domains", 1)
 
 		}
 
 	}
 
-	go incrementStats("SourcesList", 1)
+	go incrementStats("SourcesListUrl", 1)
 
 	return err
 
