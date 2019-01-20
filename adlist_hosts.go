@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -15,6 +16,10 @@ func init() {
 
 //DoubleIndexFilter puts the domains inside file
 func DoubleIndexFilter(durl string) error {
+
+	if _, urlErr := url.ParseRequestURI(durl); urlErr != nil {
+		return urlErr
+	}
 
 	fmt.Println("Retrieving killfile from: ", durl)
 

@@ -16,6 +16,10 @@ func init() {
 //SingleIndexFilter puts the domains inside file
 func SingleIndexFilter(durl string) error {
 
+	if _, urlErr := url.ParseRequestURI(durl); urlErr != nil {
+		return urlErr
+	}
+
 	fmt.Println("Retrieving killfile from: ", durl)
 
 	var myBody string
