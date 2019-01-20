@@ -54,13 +54,17 @@ func SingleIndexFilter(durl string) error {
 
 		b := strings.Fields(a)
 
-		if len(b) < 1 {
+		if len(b) != 1 {
 			continue
 		}
 
-		ur, _ := url.Parse("http://" + b[0])
+		ur, urStrErr := url.ParseRequestURI("http://" + b[0])
+		if urStrErr != nil {
+			return urStrErr
+		}
 
 		if ur.IsAbs() {
+
 			DomainKill(ur.Hostname(), durl)
 		} else {
 			go incrementStats("Malformed Single", 1)
