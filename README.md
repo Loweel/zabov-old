@@ -52,16 +52,19 @@ The config file should look like:
         "port":"53", 
         "proto":"udp", 
         "ipaddr":"127.0.0.1",
-        "upstream":"8.8.8.8:53,1.1.1.1:53"  ,
+        "upstream":"8.8.8.8:53,1.1.1.1:53,9.9.9.9:53"  ,
         "cachettl": "4",
         "killfilettl": "12",
-        "singlefilters":"https://mirror1.malwaredomains.com/files/justdomains, https://tspprs.com/dl/cl1" ,
-        "doublefilters":"http://sysctl.org/cameleon/hosts,https://www.malwaredomainlist.com/hostslist/hosts.txt,https://adaway.org/hosts.txt", 
+        "singlefilters":"./urls-hosts.txt" ,
+        "doublefilters":"./urls-domains.txt", 
         "blackholeip":"127.0.0.1",
-        "hostsfile":"./hosts.txt"
+        "hostsfile":"./urls-local.txt"
     }
 
 }
+
+
+
 </pre>
 
 Where:
@@ -72,8 +75,8 @@ Where:
 - upstream: upstream DNS where to forward the DNS query. Comma separated list of IP:PORT
 - cachettl: amount of time the cache is kept (in hours)
 - killfilettl: refresh time for killfiles
-- singlefilters: comma separated list of download URLs, for blacklists following the "singlefilter" schema.
-- doublefilters: comma separated list of download URLs, for blacklists following the "doublefilter" schema.
+- singlefilters: name of the file  for blacklists following the "singlefilter" schema.(one URL per line)
+- doublefilters: name of the file, for blacklists following the "doublefilter" schema.(one URL per line)
 - blackholeip: IP address to return when the IP is banned. This is because you may want to avoid MX issues, mail loops on localhost, or you have a web server running on localhost
 - hostsfile: path where you keep your local blacklistfile : this is in the format "singlefilter", meaning one domain per line, unlike hosts file.
 
