@@ -31,7 +31,7 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 
 	}
 
-	upl := strings.Split(ZabovUpDNS, ",")
+	upl := fileByLines(ZabovUpDNS)
 
 	c := new(dns.Client)
 	n := 0
