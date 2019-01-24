@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/boltdb/bolt"
@@ -13,6 +14,9 @@ import (
 
 //MyKillfile is the storage where we'll put domains to block
 var MyKillfile *bolt.DB
+
+//MyLock to avoid having too many writes with no parallelism.
+var MyLock = &sync.Mutex{}
 
 func init() {
 
@@ -40,6 +44,7 @@ func DomainKill(s, durl string) {
 		writeInBolt(s, durl)
 
 	}
+
 }
 
 func md5sum(s string) string {
@@ -49,6 +54,8 @@ func md5sum(s string) string {
 }
 
 func writeInBolt(key, value string) {
+
+	MyLock.Lock()
 
 	// store some data
 	err := MyKillfile.Update(func(tx *bolt.Tx) error {
@@ -68,6 +75,7 @@ func writeInBolt(key, value string) {
 		fmt.Println("Failed to write inside db: ", err.Error())
 	}
 
+	MyLock.Unlock()
 }
 
 func domainInKillfile(domain string) bool {
