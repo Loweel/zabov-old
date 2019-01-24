@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"time"
 
+	"math/rand"
 	"strings"
 
 	"github.com/miekg/dns"
@@ -31,24 +33,20 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 
 	}
 
-	upl := fileByLines(ZabovUpDNS)
-
 	c := new(dns.Client)
-	n := 0
-	for range upl {
+
+	for {
 		// round robin with retry
-		n = (n + 1) % len(upl)
-		d := upl[n]
+
+		d := oneTimeDNS()
 
 		in, _, err := c.Exchange(query, d)
 		if err != nil {
 			fmt.Printf("Problem with DNS %s : %s\n", d, err.Error())
 			go incrementStats("DNS Problems "+d, 1)
-
 			continue
 		} else {
 			go incrementStats(d, 1)
-
 			in.SetReply(query)
 			in.Authoritative = true
 			DomainCache(lfqdn, in)
@@ -57,7 +55,6 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 		}
 
 	}
-	return r
 
 }
 
@@ -70,4 +67,18 @@ func init() {
 	ForwardQuery(m)
 	fmt.Println("DNS client tested")
 	printCache()
+}
+
+func oneTimeDNS() (dns string) {
+
+	rand.Seed(time.Now().Unix())
+
+	upl := fileByLines(ZabovUpDNS)
+
+	n := rand.Int() % len(upl)
+
+	dns = upl[n]
+
+	return
+
 }
