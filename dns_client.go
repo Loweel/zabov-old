@@ -75,7 +75,7 @@ func oneTimeDNS() (dns string) {
 
 	upl := fileByLines(ZabovUpDNS)
 
-	n := rand.Int() % len(upl)
+	n := rand.Intn(128*len(upl)) % len(upl)
 
 	dns = upl[n]
 
