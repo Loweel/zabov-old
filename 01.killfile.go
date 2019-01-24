@@ -4,39 +4,28 @@ import (
 	"crypto/md5"
 	"fmt"
 	"io"
+	"os"
 	"strings"
+	"time"
 
-	"github.com/peterbourgon/diskv"
+	"github.com/boltdb/bolt"
 )
 
 //MyKillfile is the storage where we'll put domains to block
-var MyKillfile *diskv.Diskv
+var MyKillfile *bolt.DB
 
 func init() {
 
-	flatTransform := func(s string) []string {
+	var err error
 
-		var d []string
+	os.MkdirAll("./killfile", 0755)
 
-		h := md5sum(s)
-
-		d = append(d, h[0:4])
-
-		return d
-
-	}
-
-	MyKillfile = diskv.New(diskv.Options{
-		BasePath:     "killfile",
-		Transform:    flatTransform,
-		CacheSizeMax: 2048 * 2048,
-	})
-
-	if MyKillfile != nil {
-		fmt.Println("Killfile folder created: ", MyKillfile.BasePath)
-
+	MyKillfile, err = bolt.Open("./killfile/killfile.db", 0644, &bolt.Options{Timeout: 1 * time.Second})
+	if err != nil {
+		fmt.Println("Problem Creating Killfile DB: ", err.Error())
 	} else {
-		fmt.Println("FAILED to create queue!")
+		fmt.Println("Killfile DB Created")
+
 	}
 
 }
@@ -48,7 +37,7 @@ func DomainKill(s, durl string) {
 
 		s = strings.ToLower(s)
 
-		MyKillfile.WriteString(strings.Trim(s, " "), durl)
+		writeInBolt(s, durl)
 
 	}
 }
@@ -57,4 +46,50 @@ func md5sum(s string) string {
 	h := md5.New()
 	io.WriteString(h, s)
 	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+func writeInBolt(key, value string) {
+
+	// store some data
+	err := MyKillfile.Update(func(tx *bolt.Tx) error {
+		bucket, err := tx.CreateBucketIfNotExists([]byte("killfile"))
+		if err != nil {
+			return err
+		}
+
+		err = bucket.Put([]byte(key), []byte(value))
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		fmt.Println("Failed to write inside db: ", err.Error())
+	}
+
+}
+
+func domainInKillfile(domain string) bool {
+
+	var val []byte
+
+	err := MyKillfile.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte("killfile"))
+
+		if bucket == nil {
+			fmt.Println("Bucket killfile not found!")
+			return nil
+		}
+
+		val = bucket.Get([]byte(domain))
+
+		return nil
+	})
+
+	if err != nil {
+		return false
+	}
+
+	return val != nil
 }

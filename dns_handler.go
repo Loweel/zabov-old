@@ -8,8 +8,8 @@ import (
 )
 
 func (mydns *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
-	go incrementStats("TotalQueries",1 )
-	
+	go incrementStats("TotalQueries", 1)
+
 	msg := dns.Msg{}
 	msg.SetReply(r)
 
@@ -19,9 +19,9 @@ func (mydns *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		domain := msg.Question[0].Name
 		fqdn := strings.TrimRight(domain, ".")
 
-		if MyKillfile.Has(fqdn) {
-			go incrementStats("Killed",1)
-			
+		if domainInKillfile(fqdn) {
+			go incrementStats("Killed", 1)
+
 			msg.Answer = append(msg.Answer, &dns.A{
 				Hdr: dns.RR_Header{Name: domain, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: 60},
 				A:   net.ParseIP(ZabovAddBL),

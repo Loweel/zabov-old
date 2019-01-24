@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -13,11 +16,15 @@ import (
 //MyCachefile is the storage where we'll put domains to block
 var MyCachefile *diskv.Diskv
 
+const myCachePath = "cache"
+
 func init() {
 
 	flatTransform := func(s string) []string {
 
 		var d []string
+
+		d = append(d, hourPrint())
 
 		usen := strings.Split(s, ".")
 		inverse := reverse(usen)
@@ -27,7 +34,7 @@ func init() {
 	}
 
 	MyCachefile = diskv.New(diskv.Options{
-		BasePath:     "cache",
+		BasePath:     myCachePath,
 		Transform:    flatTransform,
 		CacheSizeMax: 1024 * 1024,
 	})
@@ -76,9 +83,8 @@ func GetDomainFromCache(s string) *dns.Msg {
 func cacheCleanThread() {
 	fmt.Println("Starting updater of Cache, each ", ZabovCacheTTL)
 	for {
-
 		time.Sleep(time.Duration(ZabovCacheTTL) * time.Hour)
-		go MyCachefile.EraseAll()
+		cleanCache()
 	}
 
 }
@@ -88,4 +94,44 @@ func reverse(s []string) []string {
 		s[i], s[j] = s[j], s[i]
 	}
 	return s
+}
+
+func hourPrint() (htamp string) {
+
+	t := time.Now()
+
+	htamp = fmt.Sprintf("%s", t.Format("2006010215"))
+
+	return
+
+}
+
+func printCache() {
+
+	fmt.Println("Printing Cache Keys")
+	for k := range MyCachefile.Keys(nil) {
+		fmt.Println(k)
+	}
+
+}
+
+func cleanCache() {
+
+	var cutoff = 61 * time.Minute
+
+	fileInfo, err := ioutil.ReadDir(myCachePath)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	now := time.Now()
+	for _, info := range fileInfo {
+		if diff := now.Sub(info.ModTime()); diff > cutoff {
+			if removeErr := os.RemoveAll(info.Name()); removeErr == nil {
+				fmt.Printf("Deleted %s which is %s old\n", info.Name(), diff)
+			} else {
+				fmt.Printf("Error removing %s: %s", info.Name(), removeErr.Error())
+			}
+		}
+	}
+
 }

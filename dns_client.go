@@ -69,4 +69,5 @@ func init() {
 	m.SetQuestion(dns.Fqdn("example.com"), dns.TypeA)
 	ForwardQuery(m)
 	fmt.Println("DNS client tested")
+	printCache()
 }
