@@ -18,7 +18,11 @@ var MyZabovLock = &sync.Mutex{}
 func init() {
 
 	MyZabovLock.Lock()
+	defer MyZabovLock.Unlock()
+
 	var err error
+
+	os.RemoveAll("./db")
 
 	os.MkdirAll("./db", 0755)
 
@@ -37,19 +41,18 @@ func init() {
 		fmt.Printf("could not create root bucket: %v\n", err)
 		return err
         }
-			fmt.Println("Created bucket:", string(zabovKbucket))
+		fmt.Println("Created bucket:", string(zabovKbucket))
 		
         _, err = root.CreateBucketIfNotExists(zabovCbucket)
         if err != nil {
 		 fmt.Printf("could not create weight bucket: %v\n", err)
 		 return err
         }
-			fmt.Println("Created bucket:", string(zabovCbucket))
+		fmt.Println("Created bucket:", string(zabovCbucket))
 		
         return nil
     })
     
 
-	MyZabovLock.Unlock()
-
+	
 }

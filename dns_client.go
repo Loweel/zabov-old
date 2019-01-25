@@ -23,7 +23,8 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 	fqdn := strings.TrimRight(query.Question[0].Name, ".")
 
 	lfqdn := fmt.Sprintf("%d", query.Question[0].Qtype) + "." + fqdn
-	if cached := GetDomainFromCache(lfqdn); cached != nil {
+	if domainInCache(lfqdn) {
+		cached := GetDomainFromCache(lfqdn)
 		go incrementStats("CacheHit", 1)
 		cached.SetReply(query)
 		cached.Authoritative = true
@@ -39,6 +40,7 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 
 		d := oneTimeDNS()
 
+		
 		in, _, err := c.Exchange(query, d)
 		if err != nil {
 			fmt.Printf("Problem with DNS %s : %s\n", d, err.Error())
@@ -48,7 +50,7 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 			go incrementStats(d, 1)
 			in.SetReply(query)
 			in.Authoritative = true
-			DomainCache(lfqdn, in)
+			go DomainCache(lfqdn, in)
 			return in
 
 		}
@@ -63,7 +65,9 @@ func init() {
 	m := new(dns.Msg)
 	// RFC2606 test domain, should always work, unless internet is down.
 	m.SetQuestion(dns.Fqdn("example.com"), dns.TypeA)
+	MyZabovLock.Lock()
 	ForwardQuery(m)
+	MyZabovLock.Unlock()
 	fmt.Println("DNS client tested")
 
 }

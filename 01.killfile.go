@@ -33,6 +33,7 @@ func md5sum(s string) string {
 func writeInBolt(key, value string) {
 
 	MyZabovLock.Lock()
+	defer MyZabovLock.Unlock()
 
 	// store some data
 	err := MyZabovDB.Update(func(tx *bolt.Tx) error {
@@ -52,7 +53,7 @@ func writeInBolt(key, value string) {
 		fmt.Println("Failed to write inside db: ", err.Error())
 	}
 
-	MyZabovLock.Unlock()
+	
 }
 
 func domainInKillfile(domain string) bool {

@@ -10,7 +10,7 @@ import (
 func (mydns *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	go incrementStats("TotalQueries", 1)
 
-	defer w.Close()
+
 	msg := dns.Msg{}
 	msg.SetReply(r)
 
@@ -36,5 +36,5 @@ func (mydns *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		w.WriteMsg(ret)
 	}
 	w.WriteMsg(&msg)
-	
+
 }
