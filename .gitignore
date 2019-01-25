@@ -3,3 +3,4 @@ killfile
 killfile/*
 cache
 cache/*
+db/zabov.db

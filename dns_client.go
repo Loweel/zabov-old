@@ -32,6 +32,7 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 	}
 
 	c := new(dns.Client)
+	
 
 	for {
 		// round robin with retry
