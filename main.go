@@ -31,10 +31,11 @@ var ZabovCacheTTL int
 //ZabovKillTTL is the amount of hours we cache the killfile
 var ZabovKillTTL int
 
-
 //ZabovHostsFile is the file we use to keep our hosts
 var ZabovHostsFile string
 
+//ZabovDNSArray is the array containing all the DNS we mention
+var ZabovDNSArray []string
 
 type handler struct{}
 

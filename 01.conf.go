@@ -35,6 +35,8 @@ func init() {
 	MyDNS.Addr = zabovString
 	MyDNS.Net = ZabovType
 
+	ZabovDNSArray = fileByLines(ZabovUpDNS)
+
 	MyConf.Close()
 
 }

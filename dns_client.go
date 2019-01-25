@@ -73,7 +73,12 @@ func oneTimeDNS() (dns string) {
 
 	rand.Seed(time.Now().Unix())
 
-	upl := fileByLines(ZabovUpDNS)
+	upl := ZabovDNSArray
+
+	if len(upl) < 1 {
+		fmt.Println("No DNS defined, using default 127.0.0.1:53. Hope it works!")
+		return "127.0.0.53:53"
+	}
 
 	n := rand.Intn(128*len(upl)) % len(upl)
 
