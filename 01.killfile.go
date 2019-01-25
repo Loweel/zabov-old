@@ -4,35 +4,12 @@ import (
 	"crypto/md5"
 	"fmt"
 	"io"
-	"os"
 	"strings"
-	"sync"
-	"time"
 
 	"github.com/boltdb/bolt"
 )
 
-//MyKillfile is the storage where we'll put domains to block
-var MyKillfile *bolt.DB
-
-//MyLock to avoid having too many writes with no parallelism.
-var MyLock = &sync.Mutex{}
-
-func init() {
-
-	var err error
-
-	os.MkdirAll("./killfile", 0755)
-
-	MyKillfile, err = bolt.Open("./killfile/killfile.db", 0644, &bolt.Options{Timeout: 1 * time.Second})
-	if err != nil {
-		fmt.Println("Problem Creating Killfile DB: ", err.Error())
-	} else {
-		fmt.Println("Killfile DB Created")
-
-	}
-
-}
+var zabovKbucket = []byte("killfile")
 
 //DomainKill stores a domain name inside the killfile
 func DomainKill(s, durl string) {
@@ -55,11 +32,11 @@ func md5sum(s string) string {
 
 func writeInBolt(key, value string) {
 
-	MyLock.Lock()
+	MyZabovLock.Lock()
 
 	// store some data
-	err := MyKillfile.Update(func(tx *bolt.Tx) error {
-		bucket, err := tx.CreateBucketIfNotExists([]byte("killfile"))
+	err := MyZabovDB.Update(func(tx *bolt.Tx) error {
+		bucket, err := tx.CreateBucketIfNotExists(zabovKbucket)
 		if err != nil {
 			return err
 		}
@@ -75,18 +52,18 @@ func writeInBolt(key, value string) {
 		fmt.Println("Failed to write inside db: ", err.Error())
 	}
 
-	MyLock.Unlock()
+	MyZabovLock.Unlock()
 }
 
 func domainInKillfile(domain string) bool {
 
 	var val []byte
 
-	err := MyKillfile.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket([]byte("killfile"))
+	err := MyZabovDB.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(zabovKbucket)
 
 		if bucket == nil {
-			fmt.Println("Bucket killfile not found!")
+			fmt.Printf("Bucket %s not found!", zabovKbucket)
 			return nil
 		}
 

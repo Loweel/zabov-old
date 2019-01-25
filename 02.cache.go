@@ -1,93 +1,124 @@
 package main
 
 import (
+	"bytes"
+	"encoding/gob"
 	"fmt"
-	"io/ioutil"
-	"log"
-	"os"
-	"strings"
 	"time"
 
+	"github.com/boltdb/bolt"
 	"github.com/miekg/dns"
-
-	"github.com/peterbourgon/diskv"
 )
 
-//MyCachefile is the storage where we'll put domains to block
-var MyCachefile *diskv.Diskv
+var zabovCbucket = []byte("cache")
 
-const myCachePath = "cache"
-
-func init() {
-
-	flatTransform := func(s string) []string {
-
-		var d []string
-
-		d = append(d, hourPrint())
-
-		usen := strings.Split(s, ".")
-		inverse := reverse(usen)
-		d = append(d, inverse...)
-		return d
-
-	}
-
-	MyCachefile = diskv.New(diskv.Options{
-		BasePath:     myCachePath,
-		Transform:    flatTransform,
-		CacheSizeMax: 1024 * 1024,
-	})
-
-	if MyCachefile != nil {
-		fmt.Println("Cache folder created: ", MyCachefile.BasePath)
-
-	} else {
-		fmt.Println("FAILED to create cache!")
-	}
-
-	go cacheCleanThread()
-
+type cacheItem struct {
+	query []byte
+	date  time.Time
 }
 
 //DomainCache stores a domain name inside the cache
 func DomainCache(s string, resp *dns.Msg) {
 
-	a, err := resp.Pack()
+	var domain2cache cacheItem
+	var err error
+	var dom2 bytes.Buffer
+	enc := gob.NewEncoder(&dom2)
+
+	domain2cache.query, err = resp.Pack()
 	if err != nil {
 		fmt.Println("Problems packing the response: ", err.Error())
 	}
+	domain2cache.date = time.Now()
 
-	if len(s) > 2 {
+	err = enc.Encode(domain2cache)
 
-		MyCachefile.Write(strings.Trim(s, " "), a)
-
+	if err != nil {
+		fmt.Println("Cannot GOB the domain to cache", err.Error())
 	}
+
+	cacheInBolt(s, dom2.Bytes())
+
+}
+
+func cacheInBolt(key string, domain []byte) {
+
+	MyZabovLock.Lock()
+
+	// store some data
+	err := MyZabovDB.Update(func(tx *bolt.Tx) error {
+		bucket, err := tx.CreateBucketIfNotExists(zabovCbucket)
+		if err != nil {
+
+			return err
+		}
+
+		err = bucket.Put([]byte(key), domain)
+		if err != nil {
+
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		fmt.Println("Failed to write inside db: ", err.Error())
+	}
+
+	MyZabovLock.Unlock()
 }
 
 //GetDomainFromCache stores a domain name inside the cache
 func GetDomainFromCache(s string) *dns.Msg {
 
 	ret := new(dns.Msg)
+	var cache bytes.Buffer
+	dec := gob.NewDecoder(&cache)
+	var record cacheItem
+	var conf []byte
 
-	record, _ := MyCachefile.Read(s)
-	err := ret.Unpack(record)
+	MyZabovLock.Lock()
+
+	if domainInCache(s) == false {
+		MyZabovLock.Unlock()
+		return nil
+	}
+
+	if err := MyZabovDB.View(func(tx *bolt.Tx) error {
+		conf = tx.Bucket(zabovCbucket).Get([]byte(s))
+
+		return nil
+	}); err != nil {
+
+		fmt.Println("Error getting data from cache: ", err.Error())
+		return nil
+	}
+
+	MyZabovLock.Unlock()
+
+	cache.Write(conf)
+
+	err := dec.Decode(&record)
+	if err != nil {
+		fmt.Println("Decode error :", err.Error())
+		return nil
+	}
+
+	if time.Since(record.date) > (time.Duration(ZabovCacheTTL) * time.Hour) {
+		return nil
+	}
+
+	err = ret.Unpack(record.query)
 	if err != nil {
 		fmt.Println("Problem unpacking response: ", err.Error())
+		return nil
 	}
 
 	return ret
 
 }
 
-func cacheCleanThread() {
-	fmt.Println("Starting updater of Cache, each ", ZabovCacheTTL)
-	for {
-		time.Sleep(time.Duration(ZabovCacheTTL) * time.Hour)
-		cleanCache()
-	}
 
-}
 
 func reverse(s []string) []string {
 	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
@@ -96,42 +127,27 @@ func reverse(s []string) []string {
 	return s
 }
 
-func hourPrint() (htamp string) {
+func domainInCache(domain string) bool {
 
-	t := time.Now()
+	var val []byte
 
-	htamp = fmt.Sprintf("%s", t.Format("2006010215"))
+	err := MyZabovDB.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(zabovCbucket)
 
-	return
-
-}
-
-func printCache() {
-
-	fmt.Println("Printing Cache Keys")
-	for k := range MyCachefile.Keys(nil) {
-		fmt.Println(k)
-	}
-
-}
-
-func cleanCache() {
-
-	var cutoff = 61 * time.Minute
-
-	fileInfo, err := ioutil.ReadDir(myCachePath)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	now := time.Now()
-	for _, info := range fileInfo {
-		if diff := now.Sub(info.ModTime()); diff > cutoff {
-			if removeErr := os.RemoveAll(info.Name()); removeErr == nil {
-				fmt.Printf("Deleted %s which is %s old\n", info.Name(), diff)
-			} else {
-				fmt.Printf("Error removing %s: %s", info.Name(), removeErr.Error())
-			}
+		if bucket == nil {
+			fmt.Printf("Bucket %s not found!", zabovCbucket)
+			return nil
 		}
+
+		val = bucket.Get([]byte(domain))
+
+		return nil
+	})
+
+	if err != nil {
+		return false
 	}
 
+	return val != nil
 }
+
