@@ -79,7 +79,7 @@ func GetDomainFromCache(s string) *dns.Msg {
 
 	MyZabovLock.Lock()
 
-	if domainInCache(s) == false {
+	if domainInCache(s) != true {
 		MyZabovLock.Unlock()
 		return nil
 	}
@@ -89,12 +89,17 @@ func GetDomainFromCache(s string) *dns.Msg {
 
 		return nil
 	}); err != nil {
-
 		fmt.Println("Error getting data from cache: ", err.Error())
 		return nil
 	}
 
 	MyZabovLock.Unlock()
+
+	if conf == nil {
+		return nil
+	}
+
+	fmt.Println("Conf: ", conf)
 
 	cache.Write(conf)
 
