@@ -41,7 +41,8 @@ func DoubleIndexFilter(durl string) error {
 		}
 
 	} else {
-		bodyBytes = []byte{}
+		fmt.Println("Server <"+durl+"> returned status code: ", resp.StatusCode)
+		return nil
 	}
 
 	myBody = string(bodyBytes)

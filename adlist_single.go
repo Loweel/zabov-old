@@ -40,7 +40,7 @@ func SingleIndexFilter(durl string) error {
 		}
 
 	} else {
-		fmt.Println("Server "+durl+" returned status code: ", resp.StatusCode)
+		fmt.Println("Server <"+durl+"> returned status code: ", resp.StatusCode)
 		return nil
 	}
 
