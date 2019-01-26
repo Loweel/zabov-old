@@ -18,7 +18,7 @@ func DomainKill(s, durl string) {
 
 		s = strings.ToLower(s)
 
-		writeInBolt(s, durl)
+		go writeInBolt(s, durl)
 
 	}
 
@@ -53,7 +53,6 @@ func writeInBolt(key, value string) {
 		fmt.Println("Failed to write inside db: ", err.Error())
 	}
 
-	
 }
 
 func domainInKillfile(domain string) bool {

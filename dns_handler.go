@@ -10,6 +10,10 @@ import (
 func (mydns *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	go incrementStats("TotalQueries", 1)
 
+	remIP, _, e := net.SplitHostPort(w.RemoteAddr().String())
+	if e != nil {
+		go incrementStats("CLIENT: "+remIP, 1)
+	}
 
 	msg := dns.Msg{}
 	msg.SetReply(r)

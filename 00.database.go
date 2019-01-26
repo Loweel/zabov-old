@@ -34,25 +34,22 @@ func init() {
 
 	}
 
-
 	err = MyZabovDB.Update(func(tx *bolt.Tx) error {
-        root, err := tx.CreateBucketIfNotExists(zabovKbucket)
-        if err != nil {
-		fmt.Printf("could not create root bucket: %v\n", err)
-		return err
-        }
+		root, err := tx.CreateBucketIfNotExists(zabovKbucket)
+		if err != nil {
+			fmt.Printf("could not create root bucket: %v\n", err)
+			return err
+		}
 		fmt.Println("Created bucket:", string(zabovKbucket))
-		
-        _, err = root.CreateBucketIfNotExists(zabovCbucket)
-        if err != nil {
-		 fmt.Printf("could not create weight bucket: %v\n", err)
-		 return err
-        }
-		fmt.Println("Created bucket:", string(zabovCbucket))
-		
-        return nil
-    })
-    
 
-	
+		_, err = root.CreateBucketIfNotExists(zabovCbucket)
+		if err != nil {
+			fmt.Printf("could not create weight bucket: %v\n", err)
+			return err
+		}
+		fmt.Println("Created bucket:", string(zabovCbucket))
+
+		return nil
+	})
+
 }
