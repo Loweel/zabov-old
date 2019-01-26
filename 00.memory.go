@@ -20,6 +20,7 @@ func memoryCleanerThread() {
 		time.Sleep(10 * time.Minute)
 		fmt.Println("Time to clean memory...")
 		runtime.GC()
+		fmt.Println("Garbage Collection done.")
 	}
 
 }

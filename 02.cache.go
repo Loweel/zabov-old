@@ -118,7 +118,7 @@ func domainInCache(domain string) bool {
 		bucket := tx.Bucket(zabovCbucket)
 
 		if bucket == nil {
-			fmt.Printf("Bucket %s not found!", zabovCbucket)
+			fmt.Printf("Bucket %s not found!\n", zabovCbucket)
 			return nil
 		}
 
