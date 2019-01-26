@@ -78,7 +78,7 @@ func getDoubleFilters() {
 	s := fileByLines(ZabovDoubleBL)
 
 	for _, a := range s {
-		go DoubleIndexFilter(a)
+		DoubleIndexFilter(a)
 	}
 
 }
