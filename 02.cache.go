@@ -43,11 +43,8 @@ func DomainCache(s string, resp *dns.Msg) {
 
 func cacheInBolt(key string, domain []byte) {
 
-	MyZabovLock.Lock()
-	defer MyZabovLock.Unlock()
-
 	// store some data
-	err := MyZabovDB.Update(func(tx *bolt.Tx) error {
+	err := MyZabovDB.Batch(func(tx *bolt.Tx) error {
 		bucket, err := tx.CreateBucketIfNotExists(zabovCbucket)
 		if err != nil {
 			return err
@@ -64,7 +61,6 @@ func cacheInBolt(key string, domain []byte) {
 		fmt.Println("Failed to write inside db: ", err.Error())
 	}
 
-	
 }
 
 //GetDomainFromCache stores a domain name inside the cache
@@ -76,10 +72,7 @@ func GetDomainFromCache(s string) *dns.Msg {
 	var record cacheItem
 	var conf []byte
 
-	MyZabovLock.Lock()
-	defer MyZabovLock.Unlock()
-
-	if domainInCache(s) != true {		
+	if domainInCache(s) != true {
 		return nil
 	}
 
@@ -94,8 +87,6 @@ func GetDomainFromCache(s string) *dns.Msg {
 	if conf == nil {
 		return nil
 	}
-
-	
 
 	cache.Write(conf)
 
@@ -118,10 +109,6 @@ func GetDomainFromCache(s string) *dns.Msg {
 	return ret
 
 }
-
-
-
-
 
 func domainInCache(domain string) bool {
 
@@ -146,4 +133,3 @@ func domainInCache(domain string) bool {
 
 	return val != nil
 }
-

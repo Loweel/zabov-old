@@ -34,6 +34,8 @@ func init() {
 
 	}
 
+	MyZabovDB.MaxBatchSize = 2048
+
 	err = MyZabovDB.Update(func(tx *bolt.Tx) error {
 		root, err := tx.CreateBucketIfNotExists(zabovKbucket)
 		if err != nil {
