@@ -86,7 +86,7 @@ func getSingleFilters() {
 	s := fileByLines(ZabovSingleBL)
 
 	for _, a := range s {
-		SingleIndexFilter(a)
+		go SingleIndexFilter(a)
 	}
 
 }
