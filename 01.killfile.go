@@ -18,7 +18,7 @@ func DomainKill(s, durl string) {
 
 		s = strings.ToLower(s)
 
-		go writeInBolt(s, durl)
+		writeInBolt(s, durl)
 
 	}
 
