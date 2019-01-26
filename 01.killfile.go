@@ -19,6 +19,7 @@ func DomainKill(s, durl string) {
 		s = strings.ToLower(s)
 
 		writeInBolt(s, durl)
+		go incrementStats("BL domains from "+durl+": ", 1)
 
 	}
 
