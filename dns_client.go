@@ -33,14 +33,15 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 	}
 
 	c := new(dns.Client)
-	
+
+	c.ReadTimeout = 500 * time.Millisecond
+	c.WriteTimeout = 500 * time.Millisecond
 
 	for {
 		// round robin with retry
 
 		d := oneTimeDNS()
 
-		
 		in, _, err := c.Exchange(query, d)
 		if err != nil {
 			fmt.Printf("Problem with DNS %s : %s\n", d, err.Error())
