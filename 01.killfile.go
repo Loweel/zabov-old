@@ -34,7 +34,7 @@ func md5sum(s string) string {
 func writeInBolt(key, value string) {
 
 	// store some data
-	err := MyZabovDB.Batch(func(tx *bolt.Tx) error {
+	err := MyZabovDB.Update(func(tx *bolt.Tx) error {
 		bucket, err := tx.CreateBucketIfNotExists(zabovKbucket)
 		if err != nil {
 			return err

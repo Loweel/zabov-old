@@ -44,7 +44,7 @@ func DomainCache(s string, resp *dns.Msg) {
 func cacheInBolt(key string, domain []byte) {
 
 	// store some data
-	err := MyZabovDB.Batch(func(tx *bolt.Tx) error {
+	err := MyZabovDB.Update(func(tx *bolt.Tx) error {
 		bucket, err := tx.CreateBucketIfNotExists(zabovCbucket)
 		if err != nil {
 			return err
