@@ -66,9 +66,7 @@ func init() {
 	m := new(dns.Msg)
 	// RFC2606 test domain, should always work, unless internet is down.
 	m.SetQuestion(dns.Fqdn("example.com"), dns.TypeA)
-	MyZabovLock.Lock()
 	ForwardQuery(m)
-	MyZabovLock.Unlock()
 	fmt.Println("DNS client tested")
 
 }

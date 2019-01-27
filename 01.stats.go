@@ -9,23 +9,22 @@ import (
 )
 
 type send struct {
-	Payload string
-	Number  int64
+	Payload   string
+	Number    int64
+	Increment bool
 }
 
 //ZabovStats is used to keep statistics to print
 var ZabovStats map[string]int64
 
-var increment chan send
-var overwrite chan send
+var stats chan send
 
 //StatMutex is for avoid race condition on the map
 var StatMutex = new(sync.Mutex)
 
 func init() {
 
-	increment = make(chan send, 1024)
-	overwrite = make(chan send, 1024)
+	stats = make(chan send, 1024)
 
 	ZabovStats = make(map[string]int64)
 
@@ -50,8 +49,9 @@ func incrementStats(key string, value int64) {
 
 	s.Payload = key
 	s.Number = value
+	s.Increment = true
 
-	increment <- s
+	stats <- s
 
 }
 
@@ -61,8 +61,9 @@ func setstatsvalue(key string, value int64) {
 
 	s.Payload = key
 	s.Number = value
+	s.Increment = false
 
-	overwrite <- s
+	stats <- s
 
 }
 
@@ -77,19 +78,20 @@ func statsThread() {
 
 	fmt.Println("Starting Statistical Collection Thread")
 
-	for {
-		select {
-		case ovrw := <-overwrite:
+	for item := range stats {
+
+		if item.Increment {
 			StatMutex.Lock()
-			ZabovStats[ovrw.Payload] = ovrw.Number
+			ZabovStats[item.Payload] += item.Number
 			StatMutex.Unlock()
-		case incr := <-increment:
+		} else {
 			StatMutex.Lock()
-			ZabovStats[incr.Payload] += incr.Number
+			ZabovStats[item.Payload] = item.Number
 			StatMutex.Unlock()
 		}
-		time.Sleep(1 * time.Millisecond)
+
 	}
+
 }
 
 func jsonPrettyPrint(in string) string {

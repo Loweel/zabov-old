@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"sync"
 	"time"
 
 	"github.com/boltdb/bolt"
@@ -12,13 +11,7 @@ import (
 //MyZabovDB is the storage where we'll put domains to block
 var MyZabovDB *bolt.DB
 
-//MyZabovLock to avoid having too many writes with no parallelism.
-var MyZabovLock = &sync.Mutex{}
-
 func init() {
-
-	MyZabovLock.Lock()
-	defer MyZabovLock.Unlock()
 
 	var err error
 
@@ -34,7 +27,7 @@ func init() {
 
 	}
 
-	MyZabovDB.MaxBatchSize = 2048
+	MyZabovDB.MaxBatchSize = 1024
 
 	err = MyZabovDB.Update(func(tx *bolt.Tx) error {
 		root, err := tx.CreateBucketIfNotExists(zabovKbucket)
