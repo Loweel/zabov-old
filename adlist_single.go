@@ -49,7 +49,7 @@ func SingleIndexFilter(durl string) error {
 
 	dlines := strings.Split(myBody, "\n")
 
-	go setstatsvalue("PlainLines "+durl, int64(len(dlines)))
+	setstatsvalue("PlainLines "+durl, int64(len(dlines)))
 
 	for _, a := range dlines {
 
@@ -68,7 +68,7 @@ func SingleIndexFilter(durl string) error {
 		if ur.IsAbs() {
 			DomainKill(ur.Hostname(), durl)
 		} else {
-			fmt.Print(b)
+			fmt.Println("Malformed domain: ", b)
 			incrementStats("Malformed Domains", 1)
 
 		}
