@@ -50,7 +50,7 @@ func DoubleIndexFilter(durl string) error {
 
 	dlines := strings.Split(myBody, "\n")
 
-	go setstatsvalue("HostLines "+durl, int64(len(dlines)))
+	setstatsvalue("HostLines "+durl, int64(len(dlines)))
 
 	for _, a := range dlines {
 
@@ -62,13 +62,13 @@ func DoubleIndexFilter(durl string) error {
 			}
 		} else {
 
-			go incrementStats("Malformed HostLines "+durl, 1)
+			incrementStats("Malformed HostLines "+durl, 1)
 
 		}
 
 	}
 
-	go incrementStats("SourceHostUrl", 1)
+	incrementStats("SourceHostUrl", 1)
 
 	return err
 

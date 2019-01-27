@@ -30,7 +30,7 @@ func bWriteThread() {
 	for item := range bChannel {
 
 		writeInBolt(item.Kdomain, item.Ksource)
-		go incrementStats("BL domains from "+item.Ksource+": ", 1)
+		incrementStats("BL domains from "+item.Ksource+": ", 1)
 
 	}
 

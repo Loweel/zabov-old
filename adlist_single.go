@@ -61,7 +61,7 @@ func SingleIndexFilter(durl string) error {
 
 		ur, urStrErr := url.ParseRequestURI("http://" + b[0])
 		if urStrErr != nil {
-			go incrementStats("Malformed Domains", 1)
+			incrementStats("Malformed Domains", 1)
 			return urStrErr
 		}
 
@@ -69,13 +69,13 @@ func SingleIndexFilter(durl string) error {
 			DomainKill(ur.Hostname(), durl)
 		} else {
 			fmt.Print(b)
-			go incrementStats("Malformed Domains", 1)
+			incrementStats("Malformed Domains", 1)
 
 		}
 
 	}
 
-	go incrementStats("SourcesListUrl", 1)
+	incrementStats("SourcesListUrl", 1)
 
 	return err
 
