@@ -9,7 +9,7 @@ import (
 	"github.com/miekg/dns"
 )
 
-var zabovCbucket = []byte("cache")
+
 
 type cacheItem struct {
 	Query []byte
