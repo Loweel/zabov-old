@@ -1,15 +1,40 @@
 package main
 
 import (
-	"crypto/md5"
 	"fmt"
-	"io"
 	"strings"
 
 	"github.com/boltdb/bolt"
 )
 
 var zabovKbucket = []byte("killfile")
+
+type killfileItem struct {
+	Kdomain string
+	Ksource string
+}
+
+var bChannel chan killfileItem
+
+func init() {
+
+	bChannel = make(chan killfileItem, 1024)
+	fmt.Println("Initializing kill channel engine.")
+
+	go bWriteThread()
+
+}
+
+func bWriteThread() {
+
+	for item := range bChannel {
+
+		writeInBolt(item.Kdomain, item.Ksource)
+		go incrementStats("BL domains from "+item.Ksource+": ", 1)
+
+	}
+
+}
 
 //DomainKill stores a domain name inside the killfile
 func DomainKill(s, durl string) {
@@ -18,31 +43,30 @@ func DomainKill(s, durl string) {
 
 		s = strings.ToLower(s)
 
-		writeInBolt(s, durl)
-		go incrementStats("BL domains from "+durl+": ", 1)
+		var k killfileItem
+
+		k.Kdomain = s
+		k.Ksource = durl
+
+		bChannel <- k
 
 	}
 
-}
-
-func md5sum(s string) string {
-	h := md5.New()
-	io.WriteString(h, s)
-	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
 func writeInBolt(key, value string) {
 
 	// store some data
 	err := MyZabovDB.Update(func(tx *bolt.Tx) error {
-		bucket, err := tx.CreateBucketIfNotExists(zabovKbucket)
-		if err != nil {
-			return err
-		}
+		bucket := tx.Bucket(zabovKbucket)
 
-		err = bucket.Put([]byte(key), []byte(value))
-		if err != nil {
-			return err
+		if bucket == nil {
+			fmt.Printf("Bucket %s not found!\n", zabovKbucket)
+			return nil
+		}
+		berr := bucket.Put([]byte(key), []byte(value))
+		if berr != nil {
+			return berr
 		}
 		return nil
 	})
@@ -61,7 +85,7 @@ func domainInKillfile(domain string) bool {
 		bucket := tx.Bucket(zabovKbucket)
 
 		if bucket == nil {
-			fmt.Printf("Bucket %s not found!", zabovKbucket)
+			fmt.Printf("Bucket %s not found!\n", zabovKbucket)
 			return nil
 		}
 
