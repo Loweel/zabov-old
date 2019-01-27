@@ -27,19 +27,17 @@ func init() {
 
 	}
 
-	MyZabovDB.MaxBatchSize = 1024
-
 	err = MyZabovDB.Update(func(tx *bolt.Tx) error {
 		root, err := tx.CreateBucketIfNotExists(zabovKbucket)
 		if err != nil {
-			fmt.Printf("could not create root bucket: %v\n", err)
+			fmt.Printf("could not create %s bucket: %v\n", zabovKbucket, err)
 			return err
 		}
 		fmt.Println("Created bucket:", string(zabovKbucket))
 
 		_, err = root.CreateBucketIfNotExists(zabovCbucket)
 		if err != nil {
-			fmt.Printf("could not create weight bucket: %v\n", err)
+			fmt.Printf("could not create %s bucket: %v\n", zabovCbucket, err)
 			return err
 		}
 		fmt.Println("Created bucket:", string(zabovCbucket))
