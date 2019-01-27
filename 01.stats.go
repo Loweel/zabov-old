@@ -11,7 +11,7 @@ import (
 type send struct {
 	Payload   string
 	Number    int64
-	Increment bool
+	Operation string
 }
 
 //ZabovStats is used to keep statistics to print
@@ -34,13 +34,10 @@ func init() {
 }
 
 func statsPrint() {
-	StatMutex.Lock()
 	fmt.Println()
 	stat, _ := json.Marshal(ZabovStats)
 	fmt.Println(jsonPrettyPrint(string(stat)))
-	StatMutex.Unlock()
 	fmt.Println()
-
 }
 
 func incrementStats(key string, value int64) {
@@ -49,7 +46,7 @@ func incrementStats(key string, value int64) {
 
 	s.Payload = key
 	s.Number = value
-	s.Increment = true
+	s.Operation = "INC"
 
 	stats <- s
 
@@ -61,7 +58,7 @@ func setstatsvalue(key string, value int64) {
 
 	s.Payload = key
 	s.Number = value
-	s.Increment = false
+	s.Operation = "SET"
 
 	stats <- s
 
@@ -69,7 +66,11 @@ func setstatsvalue(key string, value int64) {
 
 func reportPrintThread() {
 	for {
-		statsPrint()
+		var s send
+		s.Operation = "PRI"
+		s.Payload = "-"
+		s.Number = 0
+		stats <- s
 		time.Sleep(2 * time.Minute)
 	}
 }
@@ -80,14 +81,13 @@ func statsThread() {
 
 	for item := range stats {
 
-		if item.Increment {
-			StatMutex.Lock()
+		switch item.Operation {
+		case "INC":
 			ZabovStats[item.Payload] += item.Number
-			StatMutex.Unlock()
-		} else {
-			StatMutex.Lock()
+		case "SET":
 			ZabovStats[item.Payload] = item.Number
-			StatMutex.Unlock()
+		case "PRI":
+			statsPrint()
 		}
 
 	}
