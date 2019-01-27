@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/boltdb/bolt"
 	"github.com/miekg/dns"
 )
 
@@ -37,28 +36,15 @@ func DomainCache(s string, resp *dns.Msg) {
 		fmt.Println("Cannot GOB the domain to cache: ", err.Error())
 	}
 
-	cacheInBolt(s, dom2.Bytes())
+	cacheDomain(s, dom2.Bytes())
 
 }
 
-func cacheInBolt(key string, domain []byte) {
+func cacheDomain(key string, domain []byte) {
 
-	// store some data
-	err := MyZabovDB.Update(func(tx *bolt.Tx) error {
-		bucket, err := tx.CreateBucketIfNotExists(zabovCbucket)
-		if err != nil {
-			return err
-		}
-
-		err = bucket.Put([]byte(key), domain)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-
+	err := MyZabovCDB.Put([]byte(key), domain, nil)
 	if err != nil {
-		fmt.Println("Failed to write inside db: ", err.Error())
+		fmt.Println("Cannot write to Cache DB: ", err.Error())
 	}
 
 }
@@ -72,21 +58,11 @@ func GetDomainFromCache(s string) *dns.Msg {
 	var record cacheItem
 	var conf []byte
 
-	if domainInCache(s) != true {
+	if domainInCache(s) == false {
 		return nil
 	}
 
-	if err := MyZabovDB.View(func(tx *bolt.Tx) error {
-		conf = tx.Bucket(zabovCbucket).Get([]byte(s))
-		return nil
-	}); err != nil {
-		fmt.Println("Error getting data from cache: ", err.Error())
-		return nil
-	}
-
-	if conf == nil {
-		return nil
-	}
+	conf, _ = MyZabovCDB.Get([]byte(s), nil)
 
 	cache.Write(conf)
 
@@ -112,24 +88,12 @@ func GetDomainFromCache(s string) *dns.Msg {
 
 func domainInCache(domain string) bool {
 
-	var val []byte
-
-	err := MyZabovDB.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(zabovCbucket)
-
-		if bucket == nil {
-			fmt.Printf("Bucket %s not found!\n", zabovCbucket)
-			return nil
-		}
-
-		val = bucket.Get([]byte(domain))
-
-		return nil
-	})
-
+	has, err := MyZabovCDB.Has([]byte(domain), nil)
 	if err != nil {
+		fmt.Println("Cannot search Cache DB: ", err.Error())
 		return false
 	}
 
-	return val != nil
+	return has
+
 }

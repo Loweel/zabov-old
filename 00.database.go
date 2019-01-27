@@ -3,13 +3,15 @@ package main
 import (
 	"fmt"
 	"os"
-	"time"
 
-	"github.com/boltdb/bolt"
+	"github.com/syndtr/goleveldb/leveldb"
 )
 
-//MyZabovDB is the storage where we'll put domains to block
-var MyZabovDB *bolt.DB
+//MyZabovKDB is the storage where we'll put domains to block
+var MyZabovKDB *leveldb.DB
+
+//MyZabovCDB is the storage where we'll put domains to cache
+var MyZabovCDB *leveldb.DB
 
 func init() {
 
@@ -19,30 +21,18 @@ func init() {
 
 	os.MkdirAll("./db", 0755)
 
-	MyZabovDB, err = bolt.Open("./db/zabov.db", 0644, &bolt.Options{Timeout: 1 * time.Second})
+	MyZabovKDB, err = leveldb.OpenFile("./db/killfile", nil)
 	if err != nil {
-		fmt.Println("Problem Creating Zabov DB: ", err.Error())
+		fmt.Println("Cannot create Killfile db: ", err.Error())
 	} else {
-		fmt.Println("Zabov DB Created")
-
+		fmt.Println("Killfile DB created")
 	}
 
-	err = MyZabovDB.Update(func(tx *bolt.Tx) error {
-		root, err := tx.CreateBucketIfNotExists(zabovKbucket)
-		if err != nil {
-			fmt.Printf("could not create %s bucket: %v\n", zabovKbucket, err)
-			return err
-		}
-		fmt.Println("Created bucket:", string(zabovKbucket))
-
-		_, err = root.CreateBucketIfNotExists(zabovCbucket)
-		if err != nil {
-			fmt.Printf("could not create %s bucket: %v\n", zabovCbucket, err)
-			return err
-		}
-		fmt.Println("Created bucket:", string(zabovCbucket))
-
-		return nil
-	})
+	MyZabovCDB, err = leveldb.OpenFile("./db/cache", nil)
+	if err != nil {
+		fmt.Println("Cannot create Cache db: ", err.Error())
+	} else {
+		fmt.Println("Cache DB created")
+	}
 
 }

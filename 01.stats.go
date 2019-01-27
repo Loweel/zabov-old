@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"sync"
 	"time"
 )
 
@@ -18,9 +17,6 @@ type send struct {
 var ZabovStats map[string]int64
 
 var stats chan send
-
-//StatMutex is for avoid race condition on the map
-var StatMutex = new(sync.Mutex)
 
 func init() {
 
