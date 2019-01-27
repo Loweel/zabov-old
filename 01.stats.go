@@ -88,7 +88,7 @@ func statsThread() {
 			ZabovStats[incr.Payload] += incr.Number
 			StatMutex.Unlock()
 		}
-
+		time.Sleep(1 * time.Millisecond)
 	}
 }
 
