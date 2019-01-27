@@ -2,36 +2,36 @@ package main
 
 import (
 	"bytes"
-	"container/list"
 	"encoding/json"
 	"fmt"
-	"strconv"
-	"strings"
 	"sync"
 	"time"
 )
 
+type send struct {
+	Payload string
+	Number  int64
+}
+
 //ZabovStats is used to keep statistics to print
 var ZabovStats map[string]int64
 
-var increment *list.List
-var overwrite *list.List
+var increment chan send
+var overwrite chan send
 
 //StatMutex is for avoid race condition on the map
 var StatMutex = new(sync.Mutex)
 
 func init() {
 
-	increment = list.New()
-	overwrite = list.New()
+	increment = make(chan send, 1024)
+	overwrite = make(chan send, 1024)
 
 	ZabovStats = make(map[string]int64)
 
 	fmt.Println("Initializing stats engine.")
 	go reportPrintThread()
-	go incrementThread()
-	go overwriteThread()
-
+	go statsThread()
 }
 
 func statsPrint() {
@@ -46,17 +46,23 @@ func statsPrint() {
 
 func incrementStats(key string, value int64) {
 
-	s := fmt.Sprintf("%s|%d", key, value)
+	var s send
 
-	increment.PushBack(s)
+	s.Payload = key
+	s.Number = value
+
+	increment <- s
 
 }
 
 func setstatsvalue(key string, value int64) {
 
-	s := fmt.Sprintf("%s|%d", key, value)
+	var s send
 
-	overwrite.PushBack(s)
+	s.Payload = key
+	s.Number = value
+
+	overwrite <- s
 
 }
 
@@ -67,46 +73,23 @@ func reportPrintThread() {
 	}
 }
 
-func incrementThread() {
+func statsThread() {
 
-	fmt.Println("Starting Stats Increment Thread")
-
-	for {
-
-		for increment.Len() > 0 {
-			e := increment.Front() // First element
-
-			a := strings.Split(fmt.Sprint(e.Value), "|")
-			inc, _ := strconv.ParseInt(a[1], 10, 64)
-			StatMutex.Lock()
-			ZabovStats[a[0]] += inc
-			StatMutex.Unlock()
-			increment.Remove(e) // Dequeue
-		}
-		time.Sleep(10 * time.Millisecond)
-	}
-
-}
-
-func overwriteThread() {
-
-	fmt.Println("Starting Stats Overwrite Thread")
+	fmt.Println("Starting Statistical Collection Thread")
 
 	for {
-
-		for overwrite.Len() > 0 {
-			e := overwrite.Front() // First element
-
-			a := strings.Split(fmt.Sprint(e.Value), "|")
-			inc, _ := strconv.ParseInt(a[1], 10, 64)
+		select {
+		case ovrw := <-overwrite:
 			StatMutex.Lock()
-			ZabovStats[a[0]] = inc
+			ZabovStats[ovrw.Payload] = ovrw.Number
 			StatMutex.Unlock()
-			overwrite.Remove(e) // Dequeue
+		case incr := <-increment:
+			StatMutex.Lock()
+			ZabovStats[incr.Payload] += incr.Number
+			StatMutex.Unlock()
 		}
-		time.Sleep(10 * time.Millisecond)
-	}
 
+	}
 }
 
 func jsonPrettyPrint(in string) string {
