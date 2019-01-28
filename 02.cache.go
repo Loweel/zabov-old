@@ -57,12 +57,17 @@ func GetDomainFromCache(s string) *dns.Msg {
 	dec := gob.NewDecoder(&cache)
 	var record cacheItem
 	var conf []byte
+	var errDB error
 
 	if domainInCache(s) == false {
 		return nil
 	}
 
-	conf, _ = MyZabovCDB.Get([]byte(s), nil)
+	conf, errDB = MyZabovCDB.Get([]byte(s), nil)
+	if errDB != nul {
+		fmt.Println("Cant READ DB :" , errDB.Error() )
+		return nil
+	}
 
 	cache.Write(conf)
 
