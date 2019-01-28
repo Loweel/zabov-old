@@ -64,7 +64,7 @@ func GetDomainFromCache(s string) *dns.Msg {
 	}
 
 	conf, errDB = MyZabovCDB.Get([]byte(s), nil)
-	if errDB != null {
+	if errDB != nil {
 		fmt.Println("Cant READ DB :" , errDB.Error() )
 		return nil
 	}
