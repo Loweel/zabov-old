@@ -52,7 +52,7 @@ The config file should look like:
         "port":"53", 
         "proto":"udp", 
         "ipaddr":"127.0.0.1",
-        "upstream":"8.8.8.8:53,1.1.1.1:53,9.9.9.9:53"  ,
+        "upstream":"./dns-upstream.txt",
         "cachettl": "4",
         "killfilettl": "12",
         "singlefilters":"./urls-hosts.txt" ,
