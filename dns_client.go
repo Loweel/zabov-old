@@ -23,8 +23,7 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 	fqdn := strings.TrimRight(query.Question[0].Name, ".")
 
 	lfqdn := fmt.Sprintf("%d", query.Question[0].Qtype) + "." + fqdn
-	if domainInCache(lfqdn) {
-		cached := GetDomainFromCache(lfqdn)
+	if cached := GetDomainFromCache(lfqdn) ; cached != nil {		
 		go incrementStats("CacheHit", 1)
 		cached.SetReply(query)
 		cached.Authoritative = true
