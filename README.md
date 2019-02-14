@@ -74,7 +74,7 @@ Where:
 - ipaddr is the port to listen to. Maybe empty, (which will result in listening to 0.0.0.0) to avoid issues with docker.
 - upstream: file containing all DNS we want to query :  each line in format IP:PORT
 - cachettl: amount of time the cache is kept (in hours)
-- killfilettl: refresh time for killfiles
+- killfilettl: refresh time for _killfiles_
 - singlefilters: name of the file  for blacklists following the "singlefilter" schema.(one URL per line)
 - doublefilters: name of the file, for blacklists following the "doublefilter" schema.(one URL per line)
 - blackholeip: IP address to return when the IP is banned. This is because you may want to avoid MX issues, mail loops on localhost, or you have a web server running on localhost
