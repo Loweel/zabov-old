@@ -37,11 +37,12 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 	c.WriteTimeout = 500 * time.Millisecond
 
 	count := 0
+	ln := 3 * len(ZabovDNSArray)
 	for {
 		// round robin with retry
 
 		
-		if count == 256 {
+		if count == ln {
 			time.Sleep(10 * time.Second)
 			count = 0
 		}else{
