@@ -36,10 +36,20 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 	c.ReadTimeout = 500 * time.Millisecond
 	c.WriteTimeout = 500 * time.Millisecond
 
+	count := 0
 	for {
 		// round robin with retry
 
+		
+		if count == 256 {
+			time.Sleep(10 * time.Second)
+			count = 0
+		}else{
+			count++
+		}
+
 		d := oneTimeDNS()
+
 
 		in, _, err := c.Exchange(query, d)
 		if err != nil {
