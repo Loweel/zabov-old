@@ -43,7 +43,7 @@ func ForwardQuery(query *dns.Msg) *dns.Msg {
 
 		
 		if count == ln {
-			time.Sleep(10 * time.Second)
+			time.Sleep(time.Duration(ln) * time.Second)
 			count = 0
 		}else{
 			count++
