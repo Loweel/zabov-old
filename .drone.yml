@@ -1,7 +1,6 @@
 ---
 kind: pipeline
-name: default
-
+name: 
 
 platform: 
   arch: arm
@@ -17,7 +16,6 @@ steps:
 
  - name: publish 
    image: plugins/docker
-   registry: hub.docker.com
    repo: zabov
    tags: 
      - armv7
