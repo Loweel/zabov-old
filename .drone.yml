@@ -9,17 +9,17 @@ platform:
 
 
 steps:
-- name: build
-  image: golang:arm
-  commands:
-  - "go get"
-  - "go build"
+ - name: build
+   image: golang:arm
+   commands:
+   - "go get"
+   - "go build"
 
-- name: publish 
-  image: plugins/docker
-  registry: hub.docker.com
-  repo: zabov
-  tags: 
-    - armv7
-    - ARM
-    - latest
+ - name: publish 
+   image: plugins/docker
+   registry: hub.docker.com
+   repo: zabov
+   tags: 
+     - armv7
+     - ARM
+     - latest
