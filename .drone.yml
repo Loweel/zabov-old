@@ -1,0 +1,15 @@
+--- 
+kind: pipeline
+name: default
+
+platform: 
+  arch: arm
+  os: linux
+
+steps:
+- name: build
+  image: golang
+  commands:
+  - go get
+  - go build
+ 
