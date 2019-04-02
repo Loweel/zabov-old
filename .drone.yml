@@ -13,6 +13,7 @@ steps:
   - go get
   - go build
  
+
 - name: publish 
   image: plugins/docker
   registry: hub.docker.com
