@@ -1,18 +1,19 @@
---- 
+---
 kind: pipeline
 name: default
+
 
 platform: 
   arch: arm
   os: linux
 
+
 steps:
 - name: build
-  image: golang
+  image: golang:arm
   commands:
-  - go get
-  - go build
- 
+  - "go get"
+  - "go build"
 
 - name: publish 
   image: plugins/docker
